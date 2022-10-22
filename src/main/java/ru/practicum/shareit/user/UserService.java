@@ -6,7 +6,6 @@ import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -32,8 +31,8 @@ public class UserService {
 
     public User updateUser(User user) {
         validatorUpdated(user);
-        return getUser(userDao.update(user));
-
+        long id = userDao.update(user);
+        return getUser(id);
     }
 
     public void deleteUser(long id) {
@@ -49,12 +48,14 @@ public class UserService {
     }
 
     private void validatorUpdated(User user) {
-        getUser(user.getId());
-        if (findAll().stream().map(user1 -> user1.getEmail().equals(user.getEmail())).count()>1) {
-            throw new RuntimeException("email пользователя должен быть уникальным");
+        User oldUser = getUser(user.getId());
+        if (!oldUser.getEmail().equals(user.getEmail())) {
+            if (findAll().stream().anyMatch(user1 -> user1.getEmail().equals(user.getEmail()))) {
+                throw new RuntimeException("email пользователя должен быть уникальным");
+            }
         }
     }
-    public void changeUser(User oldUser,User user){
+        public void changeUser (User oldUser, User user){
 
+        }
     }
-}
