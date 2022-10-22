@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exeption.UserNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
