@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
+import ru.practicum.shareit.user.model.User;
 
+import java.util.InputMismatchException;
 import java.util.List;
 
 @Service
@@ -43,7 +45,7 @@ public class UserService {
         if (user.getId() != 0) {
             throw new ValidationException("При создании пользователя id не должен быть указан");
         } else if (findAll().stream().anyMatch(user1 -> user1.getEmail().equals(user.getEmail()))) {
-            throw new RuntimeException("email пользователя должен быть уникальным");
+            throw new InputMismatchException("email пользователя должен быть уникальным");
         }
     }
 
@@ -51,8 +53,23 @@ public class UserService {
         User oldUser = getUser(user.getId());
         if (!oldUser.getEmail().equals(user.getEmail())) {
             if (findAll().stream().anyMatch(user1 -> user1.getEmail().equals(user.getEmail()))) {
-                throw new RuntimeException("email пользователя должен быть уникальным");
+                throw new InputMismatchException("email пользователя должен быть уникальным");
             }
+        }
+    }
+
+    public void setNewFieldsForUpdate(User newUser, User oldUser) {
+        if (newUser.getName() == null && newUser.getEmail() == null) {
+            throw new ValidationException("Поля значений пустые");
+        }
+        if (newUser.getName() != null && newUser.getEmail() != null) {
+            return;
+        }
+        if (newUser.getName() == null) {
+            newUser.setName(oldUser.getName());
+        }
+        if (newUser.getEmail() == null) {
+            newUser.setEmail(oldUser.getEmail());
         }
     }
 }

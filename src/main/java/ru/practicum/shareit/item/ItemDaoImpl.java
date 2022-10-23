@@ -1,10 +1,7 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserDao;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,7 +43,7 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public List<Item> findAllUserItems(long userId) {
-        return itemList.stream().filter(item -> item.getOwner().getId()==userId).collect(Collectors.toList());
+        return itemList.stream().filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
     }
 
     @Override

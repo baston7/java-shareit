@@ -3,12 +3,10 @@ package ru.practicum.shareit.item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exeption.ItemNotFoundException;
-import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -38,35 +36,23 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody ItemDto itemDto) {
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                              @RequestBody ItemDto itemDto) {
         User user = userService.getUser(userId);
         Item oldItem = itemService.findItem(itemId);
-        if (oldItem.getOwner().getId()!=userId){
-            throw new ItemNotFoundException("Данный пользователь не может редактировать вещь");
+        if (oldItem.getOwner().getId() != userId) {
+            throw new ItemNotFoundException("Вещь не найдена у данного пользователя");
         }
         itemDto.setId(itemId);
         Item newItem = ItemMapper.toItem(itemDto);
         newItem.setOwner(user);
-        if (newItem.getName() == null && newItem.getDescription() == null && newItem.getAvailable() == null) {
-            throw new ValidationException("Поля значений пустые");
-        }
-        if (newItem.getName() != null && newItem.getDescription() != null && newItem.getAvailable() != null) {
-            return ItemMapper.toItemDto(itemService.updateItem(newItem));
-        }
-        if (newItem.getName() == null) {
-            newItem.setName(oldItem.getName());
-        }
-        if (newItem.getDescription() == null) {
-            newItem.setDescription(oldItem.getDescription());
-        }
-        if (newItem.getAvailable() == null) {
-            newItem.setAvailable(oldItem.getAvailable());
-        }
+        itemService.setNewFieldsForUpdate(newItem, oldItem);
         return ItemMapper.toItemDto(itemService.updateItem(newItem));
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findItem(@PathVariable long itemId) {
+    public ItemDto findItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId) {
+        userService.getUser(userId);
         return ItemMapper.toItemDto(itemService.findItem(itemId));
     }
 

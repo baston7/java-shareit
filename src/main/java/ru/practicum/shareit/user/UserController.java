@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -45,24 +46,9 @@ public class UserController {
     public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable long id) {
         userDto.setId(id);
         User oldUser = userService.getUser(id);
-        UserDto oldUserDto = UserMapper.toUserDto(oldUser);
-        if (userDto.getName()==null && userDto.getEmail()==null) {
-            throw new ValidationException("Поля значений пустые");
-        }
-        if (userDto.getName()!=null && userDto.getEmail()!=null) {
-            User user = UserMapper.toUser(userDto);
-            User updatedUser = userService.updateUser(user);
-            return UserMapper.toUserDto(updatedUser);
-        }
-        if (userDto.getName()==null && userDto.getEmail()!=null) {
-            userDto.setName(oldUserDto.getName());
-            User user = UserMapper.toUser(userDto);
-            User updatedUser = userService.updateUser(user);
-            return UserMapper.toUserDto(updatedUser);
-        }
-        userDto.setEmail(oldUserDto.getEmail());
-        User user = UserMapper.toUser(userDto);
-        User updatedUser = userService.updateUser(user);
+        User newUser = UserMapper.toUser(userDto);
+        userService.setNewFieldsForUpdate(newUser, oldUser);
+        User updatedUser = userService.updateUser(newUser);
         return UserMapper.toUserDto(updatedUser);
     }
 

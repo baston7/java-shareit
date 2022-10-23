@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.Optional;
 public class UserDaoImpl implements UserDao {
     private static List<User> users = new ArrayList<>();
     private static long id = 1;
-
 
     @Override
     public User create(User user) {
