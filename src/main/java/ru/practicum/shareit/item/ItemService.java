@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.ItemNotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
@@ -11,18 +11,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ItemService {
     private final ItemDao itemDao;
-
-    @Autowired
-    public ItemService(ItemDao itemDao) {
-        this.itemDao = itemDao;
-    }
 
     public Item addItem(Item item) {
         return itemDao.create(item);
     }
-
 
     public Item updateItem(Item item) {
         itemDao.update(item);
@@ -65,6 +60,12 @@ public class ItemService {
         }
         if (newItem.getAvailable() == null) {
             newItem.setAvailable(oldItem.getAvailable());
+        }
+    }
+
+    public void checkUsersIdFromItems(long userIdOld, long userIdNew) {
+        if (userIdOld != userIdNew) {
+            throw new ItemNotFoundException("Вещь не найдена у данного пользователя");
         }
     }
 }

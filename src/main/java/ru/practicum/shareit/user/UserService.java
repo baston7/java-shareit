@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
@@ -10,13 +10,9 @@ import java.util.InputMismatchException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserDao userDao;
-
-    @Autowired
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
-    }
 
     public User getUser(long userId) {
         return userDao.get(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));

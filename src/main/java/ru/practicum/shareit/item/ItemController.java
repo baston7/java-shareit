@@ -1,8 +1,7 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exeption.ItemNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -12,23 +11,16 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping("/items")
+@RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
     private final UserService userService;
-
-    @Autowired
-    public ItemController(ItemService itemService, UserService userService) {
-        this.itemService = itemService;
-        this.userService = userService;
-    }
+    private final String HEADER_NAME = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody @Valid ItemDto itemDto) {
+    public ItemDto addItem(@RequestHeader(HEADER_NAME) long userId, @RequestBody @Valid ItemDto itemDto) {
         User user = userService.getUser(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
@@ -36,13 +28,11 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+    public ItemDto updateItem(@RequestHeader(HEADER_NAME) long userId, @PathVariable long itemId,
                               @RequestBody ItemDto itemDto) {
         User user = userService.getUser(userId);
         Item oldItem = itemService.findItem(itemId);
-        if (oldItem.getOwner().getId() != userId) {
-            throw new ItemNotFoundException("Вещь не найдена у данного пользователя");
-        }
+        itemService.checkUsersIdFromItems(oldItem.getOwner().getId(), userId);
         itemDto.setId(itemId);
         Item newItem = ItemMapper.toItem(itemDto);
         newItem.setOwner(user);
@@ -51,20 +41,24 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId) {
+    public ItemDto findItem(@RequestHeader(HEADER_NAME) long userId, @PathVariable long itemId) {
         userService.getUser(userId);
         return ItemMapper.toItemDto(itemService.findItem(itemId));
     }
 
     @GetMapping
-    public List<ItemDto> findUserItems(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemDto> findUserItems(@RequestHeader(HEADER_NAME) long userId) {
         userService.getUser(userId);
-        return itemService.findUserItems(userId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemService.findUserItems(userId).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam String text) {
+    public List<ItemDto> searchItems(@RequestHeader(HEADER_NAME) long userId, @RequestParam String text) {
         userService.getUser(userId);
-        return itemService.searchItems(text).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+        return itemService.searchItems(text).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 }

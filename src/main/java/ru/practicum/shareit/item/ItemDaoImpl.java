@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.exeption.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
@@ -9,8 +10,8 @@ import java.util.stream.Collectors;
 @Component
 public class ItemDaoImpl implements ItemDao {
 
-    private static List<Item> itemList = new ArrayList<>();
-    private static long id = 1;
+    private List<Item> itemList = new ArrayList<>();
+    private long id = 1;
 
     @Override
     public Item create(Item item) {
@@ -22,7 +23,9 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public Optional<Item> get(long id) {
-        return itemList.stream().filter(item -> item.getId() == id).findFirst();
+        return itemList.stream()
+                .filter(item -> item.getId() == id)
+                .findFirst();
     }
 
     @Override
@@ -32,7 +35,7 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public long update(Item newItem) {
-        Item oldItem = get(newItem.getId()).get();
+        Item oldItem = get(newItem.getId()).orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
         oldItem.setName(newItem.getName());
         oldItem.setDescription(newItem.getDescription());
         oldItem.setAvailable(newItem.getAvailable());
@@ -43,11 +46,13 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public List<Item> findAllUserItems(long userId) {
-        return itemList.stream().filter(item -> item.getOwner().getId() == userId).collect(Collectors.toList());
+        return itemList.stream()
+                .filter(item -> item.getOwner().getId() == userId)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void delete(long id) {
-        itemList.remove(get(id).get());
+        itemList.remove(get(id).orElseThrow(() -> new ItemNotFoundException("Не найдена вещь на удаление")));
     }
 }
