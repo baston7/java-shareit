@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemService itemService;
     private final UserService userService;
-    private final String HEADER_NAME = "X-Sharer-User-Id";
+    private final String headerName = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader(HEADER_NAME) long userId, @RequestBody @Valid ItemDto itemDto) {
+    public ItemDto addItem(@RequestHeader(headerName) long userId, @RequestBody @Valid ItemDto itemDto) {
         User user = userService.getUser(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(user);
@@ -28,7 +28,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(HEADER_NAME) long userId, @PathVariable long itemId,
+    public ItemDto updateItem(@RequestHeader(headerName) long userId, @PathVariable long itemId,
                               @RequestBody ItemDto itemDto) {
         User user = userService.getUser(userId);
         Item oldItem = itemService.findItem(itemId);
@@ -41,13 +41,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findItem(@RequestHeader(HEADER_NAME) long userId, @PathVariable long itemId) {
+    public ItemDto findItem(@RequestHeader(headerName) long userId, @PathVariable long itemId) {
         userService.getUser(userId);
         return ItemMapper.toItemDto(itemService.findItem(itemId));
     }
 
     @GetMapping
-    public List<ItemDto> findUserItems(@RequestHeader(HEADER_NAME) long userId) {
+    public List<ItemDto> findUserItems(@RequestHeader(headerName) long userId) {
         userService.getUser(userId);
         return itemService.findUserItems(userId).stream()
                 .map(ItemMapper::toItemDto)
@@ -55,7 +55,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestHeader(HEADER_NAME) long userId, @RequestParam String text) {
+    public List<ItemDto> searchItems(@RequestHeader(headerName) long userId, @RequestParam String text) {
         userService.getUser(userId);
         return itemService.searchItems(text).stream()
                 .map(ItemMapper::toItemDto)
