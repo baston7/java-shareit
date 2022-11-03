@@ -13,36 +13,29 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
-    private final ItemDao itemDao;
+    private final ItemRepository itemRepository;
 
     public Item addItem(Item item) {
-        return itemDao.create(item);
+        return itemRepository.save(item);
     }
 
     public Item updateItem(Item item) {
-        itemDao.update(item);
-        return findItem(item.getId());
+        return itemRepository.save(item);
     }
 
     public Item findItem(long itemId) {
-        return itemDao.get(itemId).orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
+        return itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
     }
 
     public List<Item> findUserItems(long userId) {
-        return itemDao.findAllUserItems(userId);
+        return itemRepository.findAllByOwnerId(userId);
     }
 
     public List<Item> searchItems(String text) {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        return itemDao.findAll().stream()
-                .filter(item -> (item.getName()
-                        .toLowerCase()
-                        .contains(text.toLowerCase())
-                        || item.getDescription().toLowerCase()
-                        .contains(text.toLowerCase())) && item.getAvailable() == Boolean.TRUE)
-                .collect(Collectors.toList());
+        return itemRepository.search(text);
     }
 
     public void setNewFieldsForUpdate(Item newItem, Item oldItem) {
