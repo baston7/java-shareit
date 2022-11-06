@@ -14,11 +14,13 @@ public class BookingMapper {
                 booking.getId(),
                 booking.getStart(),
                 booking.getEnd(),
-                new ItemDtoInBookingDto(booking.getItem().getId(), booking.getItem().getName(),booking.getItem().getDescription(), booking.getItem().getAvailable()),
-                new User(booking.getBooker().getId(), booking.getBooker().getName(),booking.getBooker().getEmail()),
+                new ItemDtoInBookingDto(booking.getItem().getId(), booking.getItem().getName(),
+                        booking.getItem().getDescription(), booking.getItem().getAvailable()),
+                new User(booking.getBooker().getId(), booking.getBooker().getName(), booking.getBooker().getEmail()),
                 booking.getStatus()
         );
     }
+
     public static BookingDtoToOwnerItem toBookingDtoToOwnerItemToUser(Booking booking) {
         return new BookingDtoToOwnerItem(
                 booking.getId(),

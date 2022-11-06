@@ -19,16 +19,17 @@ public class BookingService {
     }
 
     public Booking addBooking(Booking booking, long creatorId) {
-        bookingValidator(booking,creatorId);
+        bookingValidator(booking, creatorId);
         return bookingRepository.save(booking);
     }
 
     public Booking updateStatusBooking(Long bookingId, Long ownerId, boolean approved) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new ItemNotFoundException("Заявка на аренду не найдена"));
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ItemNotFoundException("Заявка на аренду не найдена"));
         if (booking.getItem().getOwner().getId() != ownerId) {
             throw new UserNotFoundException("Не найден пользователь с правом на обновление статуса заявки");
         }
-        if(booking.getStatus().equals(Status.APPROVED)){
+        if (booking.getStatus().equals(Status.APPROVED)) {
             throw new ValidationException("Нельзя изменять статус заявки после подтверждения");
         }
         if (approved) {
@@ -40,7 +41,8 @@ public class BookingService {
     }
 
     public Booking findBookingByOwnerItemOrCreator(Long bookingId, Long userId) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new ItemNotFoundException("Заявка на аренду не найдена"));
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ItemNotFoundException("Заявка на аренду не найдена"));
         if (booking.getItem().getOwner().getId() != userId && booking.getBooker().getId() != userId) {
             throw new UserNotFoundException("Не найден пользователь с правом на просмотр статуса заявки");
         }
@@ -56,22 +58,28 @@ public class BookingService {
                     bookingList = bookingRepository.findByBooker_IdOrderByEndDesc(creatorId);
                     break;
                 case PAST:
-                    bookingList = bookingRepository.findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(creatorId, LocalDateTime.now(), LocalDateTime.now());
+                    bookingList = bookingRepository
+                            .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(creatorId,
+                                    LocalDateTime.now(), LocalDateTime.now());
                     break;
                 case FUTURE:
-                    bookingList = bookingRepository.findByBooker_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(creatorId, LocalDateTime.now(), LocalDateTime.now());
+                    bookingList = bookingRepository
+                            .findByBooker_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(creatorId,
+                                    LocalDateTime.now(), LocalDateTime.now());
                     break;
                 case CURRENT:
-                    bookingList = bookingRepository.findByBooker_IdAndStartIsAfterAndEndIsBeforeOrderByEndDesc(creatorId, LocalDateTime.now(), LocalDateTime.now());
+                    bookingList = bookingRepository
+                            .findByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(creatorId,
+                                    LocalDateTime.now(), LocalDateTime.now());
                     break;
                 default:
-                    Status status=Status.valueOf(state);
+                    Status status = Status.valueOf(state);
                     bookingList = bookingRepository.findByBooker_IdAndStatusEqualsOrderByEndDesc(creatorId, status);
                     break;
             }
             return bookingList;
         } catch (RuntimeException e) {
-            throw new ValidationException(String.format("Unknown state: %s",state));
+            throw new ValidationException(String.format("Unknown state: %s", state));
         }
     }
 
@@ -84,22 +92,28 @@ public class BookingService {
                     bookingList = bookingRepository.findByItem_Owner_IdOrderByEndDesc(ownerId);
                     break;
                 case PAST:
-                    bookingList = bookingRepository.findByItem_Owner_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(ownerId, LocalDateTime.now(), LocalDateTime.now());
+                    bookingList = bookingRepository
+                            .findByItem_Owner_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(ownerId,
+                                    LocalDateTime.now(), LocalDateTime.now());
                     break;
                 case FUTURE:
-                    bookingList = bookingRepository.findByItem_Owner_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(ownerId, LocalDateTime.now(), LocalDateTime.now());
+                    bookingList = bookingRepository
+                            .findByItem_Owner_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(ownerId,
+                                    LocalDateTime.now(), LocalDateTime.now());
                     break;
                 case CURRENT:
-                    bookingList = bookingRepository.findByItem_Owner_IdAndStartIsAfterAndEndIsBeforeOrderByEndDesc(ownerId, LocalDateTime.now(), LocalDateTime.now());
+                    bookingList = bookingRepository
+                            .findByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(ownerId,
+                                    LocalDateTime.now(), LocalDateTime.now());
                     break;
                 default:
-                    Status status=Status.valueOf(state);
+                    Status status = Status.valueOf(state);
                     bookingList = bookingRepository.findByItem_Owner_IdAndStatusEqualsOrderByEndDesc(ownerId, status);
                     break;
             }
             return bookingList;
         } catch (RuntimeException e) {
-            throw new ValidationException(String.format("Unknown state: %s",state));
+            throw new ValidationException(String.format("Unknown state: %s", state));
         }
     }
 
@@ -107,7 +121,7 @@ public class BookingService {
         if (booking.getStart().isAfter(booking.getEnd())) {
             throw new ValidationException("Время начала аренды должны быть раньше времени окончания");
         }
-        if (booking.getItem().getOwner().getId()==creatorId) {
+        if (booking.getItem().getOwner().getId() == creatorId) {
             throw new BookingNotFoundException("Нельзя брать вещь в аренду у самого себя");
         }
     }

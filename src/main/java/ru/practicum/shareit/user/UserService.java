@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.user.model.User;
+
 import java.util.List;
 
 @Service
@@ -31,6 +32,7 @@ public class UserService {
     public void deleteUser(long id) {
         userRepository.deleteById(id);
     }
+
     public void setNewFieldsForUpdate(User newUser, User oldUser) {
         if (newUser.getName() == null && newUser.getEmail() == null) {
             throw new ValidationException("Поля значений пустые");

@@ -4,16 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class ItemDtoInBookingDto {
+public class CommentDto {
     private long id;
     @NotBlank
-    private String name;
-    @NotBlank
-    private String description;
-    @NotNull
-    private Boolean available;
+    private String text;
+    private long itemId;
+    private String authorName;
+    private LocalDateTime created;
 }
