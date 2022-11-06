@@ -2,7 +2,9 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exeption.ItemNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoToUser;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserService;
@@ -41,17 +43,21 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findItem(@RequestHeader(headerName) long userId, @PathVariable long itemId) {
+    public ItemDtoToUser findItem(@RequestHeader(headerName) long userId, @PathVariable long itemId) {
         userService.getUser(userId);
-        return ItemMapper.toItemDto(itemService.findItem(itemId));
+        if(itemService.findItem(itemId).getOwner().getId()!=userId){
+            return ItemMapper.toItemDtoToUser(itemService.findItem(itemId));
+        }else{
+            return itemService.findUserItems(userId).stream()
+                    .filter(itemDtoToUser -> itemDtoToUser.getId()==itemId)
+                    .findFirst().orElseThrow(()->new ItemNotFoundException("Не найдено вещей у пользователя"));
+        }
     }
 
     @GetMapping
-    public List<ItemDto> findUserItems(@RequestHeader(headerName) long userId) {
+    public List<ItemDtoToUser> findUserItems(@RequestHeader(headerName) long userId) {
         userService.getUser(userId);
-        return itemService.findUserItems(userId).stream()
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+        return itemService.findUserItems(userId);
     }
 
     @GetMapping("/search")
