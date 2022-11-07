@@ -15,7 +15,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                                                             LocalDateTime time2);
 
     //поиск всех аренд создателя
-    List<Booking> findByBooker_IdOrderByEndDesc(long BookerID);
+    List<Booking> findByBooker_IdOrderByEndDesc(long bookerID);
 
     //поиск текущих аренд создателя
     List<Booking> findByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(long bookerId, LocalDateTime time1,
@@ -60,6 +60,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     //поиск текущих и будущих аренд по владельцу вещи с заданным статусом
     List<Booking> findByItem_Owner_IdAndEndIsAfterAndStatusIs(long ownerId, LocalDateTime time1,
-                                                                                 Status status);
+                                                              Status status);
 
 }

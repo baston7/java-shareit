@@ -131,8 +131,8 @@ public class BookingService {
     private boolean bookingUpdateStatusValidator(Booking booking, long ownerId) {
         LocalDateTime startTime = booking.getStart();
         LocalDateTime endTime = booking.getEnd();
-        List<Booking> approvedBookingsFutureOrPresent = bookingRepository.
-                findByItem_Owner_IdAndEndIsAfterAndStatusIs(ownerId, LocalDateTime.now(), Status.APPROVED);
+        List<Booking> approvedBookingsFutureOrPresent = bookingRepository
+                .findByItem_Owner_IdAndEndIsAfterAndStatusIs(ownerId, LocalDateTime.now(), Status.APPROVED);
         if (approvedBookingsFutureOrPresent.isEmpty()) {
             return true;
         }
