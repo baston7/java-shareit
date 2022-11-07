@@ -52,10 +52,10 @@ public class ItemService {
         ownerItemsAndBookings
                 .forEach(item -> {
                     Optional<Booking> lastBooking = bookingRepository
-                            .findTopByItem_IdAndEndIsBeforeAndStatusIsNotAndStatusIsNotOrderByEndDesc(item.getId(),
-                                    LocalDateTime.now(), Status.CANCELED, Status.REJECTED);
+                            .findTopByItem_IdAndEndIsBeforeAndStatusIsOrderByEndDesc(item.getId(),
+                                    LocalDateTime.now(), Status.APPROVED);
                     Optional<Booking> nextBooking = bookingRepository
-                            .findTopByItem_IdAndEndIsAfterAndStatusIsNotAndStatusIsNotOrderByEndDesc(item.getId(),
+                            .findTopByItem_IdAndStartIsAfterAndStatusIsNotAndStatusIsNotOrderByEndDesc(item.getId(),
                                     LocalDateTime.now(), Status.CANCELED, Status.REJECTED);
                     nextBooking.ifPresent(booking -> item.setNextBooking(BookingMapper
                             .toBookingDtoToOwnerItemToUser(booking)));

@@ -19,7 +19,7 @@ public class BookingService {
     }
 
     public Booking addBooking(Booking booking, long creatorId) {
-        bookingValidator(booking, creatorId);
+        bookingAddValidator(booking, creatorId);
         return bookingRepository.save(booking);
     }
 
@@ -32,7 +32,7 @@ public class BookingService {
         if (booking.getStatus().equals(Status.APPROVED)) {
             throw new ValidationException("Нельзя изменять статус заявки после подтверждения");
         }
-        if (approved) {
+        if (approved && bookingUpdateStatusValidator(booking, ownerId)) {
             booking.setStatus(Status.APPROVED);
         } else {
             booking.setStatus(Status.REJECTED);
@@ -117,12 +117,28 @@ public class BookingService {
         }
     }
 
-    private void bookingValidator(Booking booking, long creatorId) {
+    private void bookingAddValidator(Booking booking, long creatorId) {
         if (booking.getStart().isAfter(booking.getEnd())) {
             throw new ValidationException("Время начала аренды должны быть раньше времени окончания");
         }
         if (booking.getItem().getOwner().getId() == creatorId) {
             throw new BookingNotFoundException("Нельзя брать вещь в аренду у самого себя");
         }
+    }
+
+    /*валидация пересечения времени, если владелец захочет подтвердить бронь,
+     но уже есть подтвержденные будущие брони*/
+    private boolean bookingUpdateStatusValidator(Booking booking, long ownerId) {
+        LocalDateTime startTime = booking.getStart();
+        LocalDateTime endTime = booking.getEnd();
+        List<Booking> approvedBookingsFutureOrPresent = bookingRepository.
+                findByItem_Owner_IdAndEndIsAfterAndStatusIs(ownerId, LocalDateTime.now(), Status.APPROVED);
+        if (approvedBookingsFutureOrPresent.isEmpty()) {
+            return true;
+        }
+        return approvedBookingsFutureOrPresent.stream()
+                .anyMatch(booking1 -> (startTime.isBefore(booking1.getStart()) && endTime.isBefore(booking1.getStart()))
+                        || (startTime.isAfter(booking1.getEnd()) && endTime.isAfter(booking1.getEnd()))
+                );
     }
 }
