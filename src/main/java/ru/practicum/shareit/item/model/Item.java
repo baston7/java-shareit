@@ -1,12 +1,14 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -14,16 +16,16 @@ import javax.persistence.*;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private String name;
-    private String description;
+    long id;
+    String name;
+    String description;
     @Column(name = "is_available")
-    private Boolean available;
+    Boolean available;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id")
-    private User owner;
+    User owner;
     @Transient
-    private ItemRequest request;
+    ItemRequest request;
 
     public Item(long id, String name, String description, Boolean available) {
         this.id = id;
