@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class ItemDto {
+public class ItemDtoInBookingDto {
     long id;
     @NotBlank(message = "Название вещи не может быть пустым")
     String name;
@@ -19,5 +19,4 @@ public class ItemDto {
     String description;
     @NotNull(message = "Статус вещи не можеть быть null")
     Boolean available;
-    Long requestId;
 }

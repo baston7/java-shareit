@@ -6,52 +6,31 @@ import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.InputMismatchException;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
     public User getUser(long userId) {
-        return userDao.get(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
     }
 
     public List<User> findAll() {
-        return userDao.findAll();
+        return userRepository.findAll();
     }
 
     public User createUser(User user) {
-        validatorCreate(user);
-        return userDao.create(user);
+        return userRepository.save(user);
     }
 
     public User updateUser(User user) {
-        validatorUpdated(user);
-        long id = userDao.update(user);
-        return getUser(id);
+        return userRepository.save(user);
     }
 
     public void deleteUser(long id) {
-        userDao.delete(id);
-    }
-
-    private void validatorCreate(User user) {
-        if (user.getId() != 0) {
-            throw new ValidationException("При создании пользователя id не должен быть указан");
-        } else if (findAll().stream().anyMatch(user1 -> user1.getEmail().equals(user.getEmail()))) {
-            throw new InputMismatchException("email пользователя должен быть уникальным");
-        }
-    }
-
-    private void validatorUpdated(User user) {
-        User oldUser = getUser(user.getId());
-        if (!oldUser.getEmail().equals(user.getEmail())) {
-            if (findAll().stream().anyMatch(user1 -> user1.getEmail().equals(user.getEmail()))) {
-                throw new InputMismatchException("email пользователя должен быть уникальным");
-            }
-        }
+        userRepository.deleteById(id);
     }
 
     public void setNewFieldsForUpdate(User newUser, User oldUser) {
