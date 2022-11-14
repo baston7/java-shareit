@@ -24,7 +24,9 @@ public class Item {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id")
     User owner;
-    @Transient
+
+    @ManyToOne
+    @JoinColumn(name = "request_id")
     ItemRequest request;
 
     public Item(long id, String name, String description, Boolean available) {
