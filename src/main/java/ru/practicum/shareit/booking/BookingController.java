@@ -31,7 +31,7 @@ public class BookingController {
         User creator = userService.getUser(creatorId);
         Item item = itemService.findItem(bookingDtoFromUser.getItemId());
         if (!item.getAvailable()) {
-            throw new ValidationException("Вещь не доступна");
+            throw new ValidationException("Вещь не доступна ");
         }
 
         Booking booking = BookingMapper.toBooking(bookingDtoFromUser, creator, item);
