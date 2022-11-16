@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDtoFromUser;
 import ru.practicum.shareit.booking.dto.BookingDtoToUser;
@@ -13,12 +14,14 @@ import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
+@Validated
 public class BookingController {
     private final BookingService bookingService;
     private final ItemService itemService;
@@ -55,23 +58,27 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDtoToUser> findBookingsCreator(@RequestHeader(headerName) long creatorId,
-                                                      @RequestParam(defaultValue = "ALL") String state) {
+                                                      @RequestParam(defaultValue = "ALL") String state,
+                                                      @RequestParam(defaultValue = "0") @Min(0) int from,
+                                                      @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(creatorId);
 
-        return bookingService.findCreatorBookings(creatorId, state).stream()
+        return bookingService.findCreatorBookings(creatorId, state,from/size,size).stream()
                 .map(BookingMapper::toBookingDtoToUser)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/owner")
     public List<BookingDtoToUser> findOwnerBookings(@RequestHeader(headerName) long ownerId,
-                                                    @RequestParam(defaultValue = "ALL") String state) {
+                                                    @RequestParam(defaultValue = "ALL") String state,
+                                                    @RequestParam(defaultValue = "0") @Min(0) int from,
+                                                    @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(ownerId);
-        if (itemService.findUserItems(ownerId).isEmpty()) {
+        if (itemService.findUserItems(ownerId,0,size).isEmpty()) {
             throw new ItemNotFoundException("У пользователя нет вещей");
         }
 
-        return bookingService.findOwnerBookings(ownerId, state).stream()
+        return bookingService.findOwnerBookings(ownerId, state,from/size,size).stream()
                 .map(BookingMapper::toBookingDtoToUser)
                 .collect(Collectors.toList());
     }
