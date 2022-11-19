@@ -26,7 +26,7 @@ public class BookingService {
 
     public Booking updateStatusBooking(Long bookingId, Long ownerId, boolean approved) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ItemNotFoundException("Заявка на аренду не найдена"));
+                .orElseThrow(() -> new BookingNotFoundException("Заявка на аренду не найдена"));
         if (booking.getItem().getOwner().getId() != ownerId) {
             throw new UserNotFoundException("Не найден пользователь с правом на обновление статуса заявки");
         }
