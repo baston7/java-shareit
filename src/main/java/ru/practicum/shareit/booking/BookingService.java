@@ -43,10 +43,11 @@ public class BookingService {
 
     public Booking findBookingByOwnerItemOrCreator(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ItemNotFoundException("Заявка на аренду не найдена"));
+                .orElseThrow(() -> new BookingNotFoundException("Заявка на аренду не найдена"));
         if (booking.getItem().getOwner().getId() != userId && booking.getBooker().getId() != userId) {
             throw new UserNotFoundException("Не найден пользователь с правом на просмотр статуса заявки");
         }
+
         return booking;
     }
 
