@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 
@@ -61,4 +63,5 @@ public class UserServiceTests {
         User user1 = userService.getUser(1);
         assertEquals(user.getName(), user1.getName());
     }
+
 }

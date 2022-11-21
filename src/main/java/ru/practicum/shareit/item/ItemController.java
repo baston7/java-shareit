@@ -50,7 +50,6 @@ public class ItemController {
         Item oldItem = itemService.findItem(itemId);
         itemService.checkUsersIdFromItems(oldItem.getOwner().getId(), userId);
         itemDto.setId(itemId);
-        //////////////////////////
         Item newItem = ItemMapper.toItem(itemDto, null);
         newItem.setOwner(user);
         itemService.setNewFieldsForUpdate(newItem, oldItem);
