@@ -12,6 +12,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemRequestDto {
     private long id;
@@ -20,4 +21,5 @@ public class ItemRequestDto {
     private long requestorId;
     private LocalDateTime created;
     List<ItemDto> items;
+
 }
