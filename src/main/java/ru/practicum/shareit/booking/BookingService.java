@@ -4,7 +4,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exeption.BookingNotFoundException;
-import ru.practicum.shareit.exeption.ItemNotFoundException;
 import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 
@@ -92,12 +91,13 @@ public class BookingService {
             List<Booking> bookingList;
             switch (state1) {
                 case ALL:
-                    bookingList = bookingRepository.findByItem_Owner_IdOrderByEndDesc(ownerId, PageRequest.of(page, size));
+                    bookingList = bookingRepository.findByItem_Owner_IdOrderByEndDesc(ownerId, PageRequest.of(page,
+                            size));
                     break;
                 case PAST:
                     bookingList = bookingRepository
                             .findByItem_Owner_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(ownerId,
-                                    LocalDateTime.now(), LocalDateTime.now(),PageRequest.of(page, size));
+                                    LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 case FUTURE:
                     bookingList = bookingRepository
@@ -111,7 +111,8 @@ public class BookingService {
                     break;
                 default:
                     Status status = Status.valueOf(state);
-                    bookingList = bookingRepository.findByItem_Owner_IdAndStatusEqualsOrderByEndDesc(ownerId, status, PageRequest.of(page, size));
+                    bookingList = bookingRepository.findByItem_Owner_IdAndStatusEqualsOrderByEndDesc(ownerId, status,
+                            PageRequest.of(page, size));
                     break;
             }
             return bookingList;

@@ -40,8 +40,8 @@ public class ItemService {
         return itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
     }
 
-    public List<ItemDtoToUser> findUserItems(long userId, int page,int size) {
-        List<Item> ownerItems = itemRepository.findAllByOwnerIdOrderById(userId, PageRequest.of(page,size));
+    public List<ItemDtoToUser> findUserItems(long userId, int page, int size) {
+        List<Item> ownerItems = itemRepository.findAllByOwnerIdOrderById(userId, PageRequest.of(page, size));
         if (ownerItems.isEmpty()) {
             throw new ItemNotFoundException("Не найдено вещей у пользователя");
         }
@@ -66,11 +66,11 @@ public class ItemService {
         return ownerItemsAndBookings;
     }
 
-    public List<Item> searchItems(String text, int page,int size) {
+    public List<Item> searchItems(String text, int page, int size) {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        return itemRepository.search(text,PageRequest.of(page, size));
+        return itemRepository.search(text, PageRequest.of(page, size));
     }
 
     public void setNewFieldsForUpdate(Item newItem, Item oldItem) {
@@ -117,7 +117,8 @@ public class ItemService {
         List<Comment> comments = commentRepository.findCommentsByItem_Id(itemId);
         return comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
     }
-    public List<Item> findItemsByRequest(long request_id){
-        return itemRepository.findAllByRequest_Id(request_id);
+
+    public List<Item> findItemsByRequest(long requestId) {
+        return itemRepository.findAllByRequestId(requestId);
     }
 }

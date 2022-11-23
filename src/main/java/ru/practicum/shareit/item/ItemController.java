@@ -10,13 +10,11 @@ import ru.practicum.shareit.item.dto.ItemDtoToUser;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.ItemRequestService;
-import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,10 +32,10 @@ public class ItemController {
     public ItemDto addItem(@RequestHeader(headerName) long userId, @RequestBody @Valid ItemDto itemDto) {
         User user = userService.getUser(userId);
         Item item;
-        if (itemDto.getRequestId()!=null){
-            item = ItemMapper.toItem(itemDto,itemRequestService.findOneRequest(itemDto.getRequestId()));
-        }else{
-            item = ItemMapper.toItem(itemDto,null);
+        if (itemDto.getRequestId() != null) {
+            item = ItemMapper.toItem(itemDto, itemRequestService.findOneRequest(itemDto.getRequestId()));
+        } else {
+            item = ItemMapper.toItem(itemDto, null);
         }
         item.setOwner(user);
         return ItemMapper.toItemDto(itemService.addItem(item));
@@ -62,7 +60,7 @@ public class ItemController {
         if (itemService.findItem(itemId).getOwner().getId() != userId) {
             return ItemMapper.toItemDtoToUser(itemService.findItem(itemId), itemService.getComments(itemId));
         } else {
-            return itemService.findUserItems(userId,0,1).stream()
+            return itemService.findUserItems(userId, 0, 1).stream()
                     .filter(itemDtoToUser -> itemDtoToUser.getId() == itemId)
                     .findFirst().orElseThrow(() -> new ItemNotFoundException("Не найдено вещей у пользователя"));
         }
@@ -73,7 +71,7 @@ public class ItemController {
                                              @RequestParam(defaultValue = "0") @Min(0) int from,
                                              @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(userId);
-        return itemService.findUserItems(userId,from/size,size);
+        return itemService.findUserItems(userId, from / size, size);
     }
 
     @GetMapping("/search")
@@ -81,7 +79,7 @@ public class ItemController {
                                      @RequestParam(defaultValue = "0") @Min(0) int from,
                                      @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(userId);
-        return itemService.searchItems(text,from/size,size).stream()
+        return itemService.searchItems(text, from / size, size).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }

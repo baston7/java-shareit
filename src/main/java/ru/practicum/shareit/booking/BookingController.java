@@ -63,7 +63,7 @@ public class BookingController {
                                                       @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(creatorId);
 
-        return bookingService.findCreatorBookings(creatorId, state,from/size,size).stream()
+        return bookingService.findCreatorBookings(creatorId, state, from / size, size).stream()
                 .map(BookingMapper::toBookingDtoToUser)
                 .collect(Collectors.toList());
     }
@@ -74,11 +74,11 @@ public class BookingController {
                                                     @RequestParam(defaultValue = "0") @Min(0) int from,
                                                     @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(ownerId);
-        if (itemService.findUserItems(ownerId,0,size).isEmpty()) {
+        if (itemService.findUserItems(ownerId, 0, size).isEmpty()) {
             throw new ItemNotFoundException("У пользователя нет вещей");
         }
 
-        return bookingService.findOwnerBookings(ownerId, state,from/size,size).stream()
+        return bookingService.findOwnerBookings(ownerId, state, from / size, size).stream()
                 .map(BookingMapper::toBookingDtoToUser)
                 .collect(Collectors.toList());
     }
