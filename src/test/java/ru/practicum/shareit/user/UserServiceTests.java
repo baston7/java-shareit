@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.model.User;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -79,5 +80,23 @@ public class UserServiceTests {
         user2.setEmail(null);
         userService.setNewFieldsForUpdate(user2, user);
         assertEquals(user2.getEmail(), user.getEmail());
+    }
+
+    @Test
+    public void testFindAll() {
+        Mockito
+                .when(userRepository.findAll())
+                .thenReturn(List.of(user, user2));
+        List<User> users = userService.findAll();
+        assertEquals(2, users.size());
+    }
+
+    @Test
+    public void testUpdateUser() {
+        Mockito
+                .when(userRepository.save(any(User.class)))
+                .thenReturn(user);
+        User user1 = userService.updateUser(new User("Вася", "b@mail.ru"));
+        assertEquals(user.getName(), user1.getName());
     }
 }
