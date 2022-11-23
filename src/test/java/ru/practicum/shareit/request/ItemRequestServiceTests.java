@@ -21,10 +21,12 @@ public class ItemRequestServiceTests {
     private ItemRequestService service;
     @Mock
     ItemRequestRepository itemRequestRepository;
+
     @BeforeEach
     public void createService() {
         service = new ItemRequestService(itemRequestRepository);
     }
+
     @Test
     public void testGetWithoutRequest() {
         assertThrows(ItemRequestNotFoundException.class, () -> service.findOneRequest(22));
