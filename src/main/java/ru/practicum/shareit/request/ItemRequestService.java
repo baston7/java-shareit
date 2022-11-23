@@ -28,6 +28,7 @@ public class ItemRequestService {
     }
 
     public ItemRequest findOneRequest(long requestId) {
-        return itemRequestRepository.findById(requestId).orElseThrow(() -> new ItemRequestNotFoundException("Такого запроса не существует"));
+        return itemRequestRepository.findById(requestId)
+                .orElseThrow(() -> new ItemRequestNotFoundException("Такого запроса не существует"));
     }
 }

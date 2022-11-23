@@ -7,8 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -64,12 +61,14 @@ public class ItemServiceTests {
 
     @BeforeEach
     public void createService() {
-        itemService = new ItemService(itemRepository, bookingRepository, commentRepository);
+        itemService = new ItemService(itemRepository, bookingRepository,
+                commentRepository);
     }
 
     @Test
     public void testFindItemWithoutItem() {
-        assertThrows(ItemNotFoundException.class, () -> itemService.findItem(6));
+        assertThrows(ItemNotFoundException.class, () -> itemService
+                .findItem(6));
     }
 
     @Test
@@ -95,14 +94,18 @@ public class ItemServiceTests {
                                 any(LocalDateTime.class), any(Status.class)))
                 .thenReturn(Optional.of(booking3));
         Mockito
-                .when(bookingRepository.findTopByItem_IdAndStartIsAfterAndStatusIsNotAndStatusIsNotOrderByEndDesc(anyLong(),
+                .when(bookingRepository
+                        .findTopByItem_IdAndStartIsAfterAndStatusIsNotAndStatusIsNotOrderByEndDesc(anyLong(),
                         any(LocalDateTime.class), any(Status.class), any(Status.class)))
                 .thenReturn(Optional.of(booking2));
 
         assertEquals(1, itemService.findUserItems(3, 0, 10).size());
-        assertEquals(booking2.getStart(), itemService.findUserItems(3, 0, 10).get(0).getNextBooking().getStart());
-        assertEquals(booking3.getStart(), itemService.findUserItems(3, 0, 10).get(0).getLastBooking().getStart());
-        assertEquals(item.getDescription(), itemService.findUserItems(3, 0, 10).get(0).getDescription());
+        assertEquals(booking2.getStart(), itemService.findUserItems(3, 0, 10).get(0)
+                .getNextBooking().getStart());
+        assertEquals(booking3.getStart(), itemService.findUserItems(3, 0, 10).get(0)
+                .getLastBooking().getStart());
+        assertEquals(item.getDescription(), itemService.findUserItems(3, 0, 10).get(0)
+                .getDescription());
     }
 
     @Test
@@ -150,7 +153,8 @@ public class ItemServiceTests {
         item.setOwner(user);
         Mockito
                 .when(bookingRepository
-                        .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(), any(LocalDateTime.class),
+                        .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
+                                any(LocalDateTime.class),
                                 any(LocalDateTime.class)))
                 .thenReturn(Collections.emptyList());
         assertThrows(ValidationException.class, () -> itemService.addComment(user2, item, "Хорошо"));
@@ -164,7 +168,8 @@ public class ItemServiceTests {
         List<Booking> bookings = List.of(booking3);
         Mockito
                 .when(bookingRepository
-                        .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(), any(LocalDateTime.class),
+                        .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
+                                any(LocalDateTime.class),
                                 any(LocalDateTime.class)))
                 .thenReturn(bookings);
         Mockito

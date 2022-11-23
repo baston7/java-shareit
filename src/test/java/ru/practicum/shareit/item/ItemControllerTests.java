@@ -1,55 +1,34 @@
 package ru.practicum.shareit.item;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exeption.ItemNotFoundException;
-import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoToUser;
-import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequestMapper;
 import ru.practicum.shareit.request.ItemRequestService;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.user.UserController;
-import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -95,7 +74,7 @@ public class ItemControllerTests {
         owner = new User(1, "Petya", "petya@mail.ru");
         requestor = new User(2, "Vasia", "vasia@mail.ru");
         itemRequest = new ItemRequest(1, "нужна ручка гелевая", requestor, LocalDateTime.now());
-        commentDto=new CommentDto(1,"Прекрасно",1,requestor.getName());
+        commentDto = new CommentDto(1, "Прекрасно", 1, requestor.getName());
     }
 
     @Test
@@ -165,18 +144,19 @@ public class ItemControllerTests {
                 .andExpect(jsonPath("$.description", is("Шариковая")))
                 .andExpect(jsonPath("$.requestId", is(nullValue())));
     }
+
     @Test
     void testFindItem() throws Exception {
-        List<Item> userItems= List.of(item,item2,item3,item4);
+        List<Item> userItems = List.of(item, item2, item3, item4);
         userItems.forEach(item1 -> item1.setOwner(owner));
-        List<ItemDtoToUser> userItemsDto=userItems.stream()
-                .map(item1 -> ItemMapper.toItemDtoToUser(item1,Collections.emptyList()))
+        List<ItemDtoToUser> userItemsDto = userItems.stream()
+                .map(item1 -> ItemMapper.toItemDtoToUser(item1, Collections.emptyList()))
                 .collect(Collectors.toList());
         when(userService.getUser(anyLong()))
                 .thenReturn(owner);
         when(itemService.findItem(anyLong()))
                 .thenReturn(item);
-        when(itemService.findUserItems(anyLong(),any(Integer.class),any(Integer.class)))
+        when(itemService.findUserItems(anyLong(), any(Integer.class), any(Integer.class)))
                 .thenReturn(userItemsDto);
 
 
@@ -187,16 +167,17 @@ public class ItemControllerTests {
                 .andExpect(jsonPath("$.name", is("перо")))
                 .andExpect(jsonPath("$.description", is("красивое")));
     }
+
     @Test
     void testFindUserItems() throws Exception {
-        List<Item> userItems= List.of(item,item2,item3,item4);
+        List<Item> userItems = List.of(item, item2, item3, item4);
         userItems.forEach(item1 -> item1.setOwner(owner));
-        List<ItemDtoToUser> userItemsDto=userItems.stream()
-                .map(item1 -> ItemMapper.toItemDtoToUser(item1,Collections.emptyList()))
+        List<ItemDtoToUser> userItemsDto = userItems.stream()
+                .map(item1 -> ItemMapper.toItemDtoToUser(item1, Collections.emptyList()))
                 .collect(Collectors.toList());
         when(userService.getUser(anyLong()))
                 .thenReturn(owner);
-        when(itemService.findUserItems(1,1,1))
+        when(itemService.findUserItems(1, 1, 1))
                 .thenReturn(List.of(userItemsDto.get(1)));
 
 
@@ -207,13 +188,14 @@ public class ItemControllerTests {
                 .andExpect(jsonPath("$[0].name", is("перо")))
                 .andExpect(jsonPath("$[0].description", is("красивое")));
     }
+
     @Test
     void testSearchItems() throws Exception {
-        List<Item> userItems= List.of(item,item2,item3,item4);
+        List<Item> userItems = List.of(item, item2, item3, item4);
         userItems.forEach(item1 -> item1.setOwner(owner));
         when(userService.getUser(anyLong()))
                 .thenReturn(owner);
-        when(itemService.searchItems("перо",1,1))
+        when(itemService.searchItems("перо", 1, 1))
                 .thenReturn(List.of(userItems.get(1)));
 
 
@@ -224,16 +206,17 @@ public class ItemControllerTests {
                 .andExpect(jsonPath("$[0].name", is("перо")))
                 .andExpect(jsonPath("$[0].description", is("красивое")));
     }
+
     @Test
     void testAddComment() throws Exception {
-        List<Item> userItems= List.of(item,item2,item3,item4);
+        List<Item> userItems = List.of(item, item2, item3, item4);
         userItems.forEach(item1 -> item1.setOwner(owner));
         when(userService.getUser(anyLong()))
                 .thenReturn(requestor);
         when(itemService.findItem(1))
                 .thenReturn(item);
-        when(itemService.addComment(any(User.class),any(Item.class),anyString()))
-                .thenReturn(CommentMapper.toComment(requestor,item,"прекрасно"));
+        when(itemService.addComment(any(User.class), any(Item.class), anyString()))
+                .thenReturn(CommentMapper.toComment(requestor, item, "прекрасно"));
 
 
         mvc.perform(post("/items/1/comment")
@@ -246,6 +229,4 @@ public class ItemControllerTests {
                 .andExpect(jsonPath("$.text", is("прекрасно")))
                 .andExpect(jsonPath("$.itemId", is(1)));
     }
-
-
 }

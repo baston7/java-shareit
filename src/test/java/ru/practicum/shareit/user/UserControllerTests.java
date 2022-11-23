@@ -7,22 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,7 +50,7 @@ public class UserControllerTests {
                 .build();
 
         userDto = new UserDto(1L, "Vasia", "vasia@mail.ru");
-        userDtoUpdate = new UserDto( "Vasiliy", "vasia@mail.ru");
+        userDtoUpdate = new UserDto("Vasiliy", "vasia@mail.ru");
         userDtoNotValidEmail = new UserDto(1L, "Vasia", "vasiaail.ru");
         userDtoNotEmail = new UserDto(1L, "Vasia", "");
         userDto2 = new UserDto(2L, "Petia", "petia@mail.ru");
@@ -99,6 +91,7 @@ public class UserControllerTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400));
     }
+
     @Test
     void testUserUpdate() throws Exception {
         when(userService.getUser(anyLong()))
@@ -114,6 +107,7 @@ public class UserControllerTests {
                 .andExpect(jsonPath("$.name", is(userDtoUpdate.getName())))
                 .andExpect(jsonPath("$.email", is(userDtoUpdate.getEmail())));
     }
+
     @Test
     void testGetUser() throws Exception {
         when(userService.getUser(anyLong()))
@@ -127,7 +121,8 @@ public class UserControllerTests {
 
     @Test
     void testFindAll() throws Exception {
-        List<User> users= Stream.of(userDto2,userDto).map(UserMapper::toUser).collect(Collectors.toList());;
+        List<User> users = Stream.of(userDto2, userDto).map(UserMapper::toUser).collect(Collectors.toList());
+        ;
 
         when(userService.findAll())
                 .thenReturn(users);
@@ -143,6 +138,7 @@ public class UserControllerTests {
                 .andExpect(jsonPath("$[1].name", is(userDto.getName())))
                 .andExpect(jsonPath("$[1].email", is(userDto.getEmail())));
     }
+
     @Test
     void testDeleteUser() throws Exception {
         doNothing().when(userService).deleteUser(1L);

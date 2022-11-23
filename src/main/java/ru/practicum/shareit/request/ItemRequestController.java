@@ -27,9 +27,11 @@ public class ItemRequestController {
     private final String headerName = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemRequestDto addRequest(@RequestHeader(headerName) long userId, @RequestBody @Valid ItemRequestDto itemRequestDto) {
+    public ItemRequestDto addRequest(@RequestHeader(headerName) long userId,
+                                     @RequestBody @Valid ItemRequestDto itemRequestDto) {
         User requestor = userService.getUser(userId);
-        ItemRequest itemRequest = itemRequestService.addRequest(ItemRequestMapper.toItemRequest(itemRequestDto, requestor));
+        ItemRequest itemRequest = itemRequestService.addRequest(ItemRequestMapper.toItemRequest(itemRequestDto,
+                requestor));
         return ItemRequestMapper.toItemRequestDto(itemRequest, Collections.emptyList());
     }
 
@@ -49,7 +51,7 @@ public class ItemRequestController {
                                                 @RequestParam(defaultValue = "0") @Min(0) int from,
                                                 @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(userId);
-        List<ItemRequest> requests = itemRequestService.findAllRequests(userId, from/size, size);
+        List<ItemRequest> requests = itemRequestService.findAllRequests(userId, from / size, size);
         return requests.stream()
                 .map(request -> ItemRequestMapper.toItemRequestDto(request,
                         itemService.findItemsByRequest(request.getId())))

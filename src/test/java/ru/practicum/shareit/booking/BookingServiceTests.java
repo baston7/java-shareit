@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,11 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exeption.BookingNotFoundException;
-import ru.practicum.shareit.exeption.ItemNotFoundException;
 import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
-import ru.practicum.shareit.item.CommentRepository;
-import ru.practicum.shareit.item.ItemService;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -43,9 +39,6 @@ public class BookingServiceTests {
     User user2 = new User("Петя", "p@mail.ru");
     User user3 = new User("Сережа", "s@mail.ru");
     Item item = new Item(1, "ручка", "шариковая", Boolean.TRUE);
-    Item item2 = new Item(1, null, "чернильное", Boolean.TRUE);
-    Item item3 = new Item(3, "маркер", null, Boolean.TRUE);
-    Item item4 = new Item(3, "карандаш", "мягкий", null);
     //текущая аренда
     Booking booking = new Booking(1, LocalDateTime.of(2021, 11, 1, 0, 0),
             LocalDateTime.of(2021, 11, 30, 0, 0), item, user2, Status.APPROVED);
@@ -89,7 +82,8 @@ public class BookingServiceTests {
         Mockito
                 .when(bookingRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
-        assertThrows(BookingNotFoundException.class, () -> bookingService.updateStatusBooking(1L, 1L, true));
+        assertThrows(BookingNotFoundException.class, () -> bookingService.updateStatusBooking(1L, 1L,
+                true));
     }
 
     @Test
@@ -99,7 +93,8 @@ public class BookingServiceTests {
         Mockito
                 .when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.of(booking));
-        assertThrows(UserNotFoundException.class, () -> bookingService.updateStatusBooking(1L, user2.getId(), true));
+        assertThrows(UserNotFoundException.class, () -> bookingService.updateStatusBooking(1L, user2.getId(),
+                true));
     }
 
     @Test
@@ -109,7 +104,8 @@ public class BookingServiceTests {
         Mockito
                 .when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.of(booking));
-        assertThrows(ValidationException.class, () -> bookingService.updateStatusBooking(1L, user.getId(), true));
+        assertThrows(ValidationException.class, () -> bookingService.updateStatusBooking(1L, user.getId(),
+                true));
     }
 
     @Test
@@ -122,7 +118,8 @@ public class BookingServiceTests {
                 .thenReturn(Optional.of(booking));
         Mockito
                 .when(bookingRepository
-                        .findByItem_Owner_IdAndEndIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class), any(Status.class)))
+                        .findByItem_Owner_IdAndEndIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class),
+                                any(Status.class)))
                 .thenReturn(Collections.emptyList());
         Mockito
                 .when(bookingRepository.save(any(Booking.class)))
@@ -143,7 +140,8 @@ public class BookingServiceTests {
                 .thenReturn(Optional.of(booking));
         Mockito
                 .when(bookingRepository
-                        .findByItem_Owner_IdAndEndIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class), any(Status.class)))
+                        .findByItem_Owner_IdAndEndIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class),
+                                any(Status.class)))
                 .thenReturn(List.of(booking4));
         Mockito
                 .when(bookingRepository.save(any(Booking.class)))
@@ -159,8 +157,10 @@ public class BookingServiceTests {
         Mockito
                 .when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.empty());
-        assertThrows(BookingNotFoundException.class,()->bookingService.findBookingByOwnerItemOrCreator(1L,2L));
+        assertThrows(BookingNotFoundException.class, () -> bookingService.findBookingByOwnerItemOrCreator(1L,
+                2L));
     }
+
     @Test
     public void testFindBookingByOwnerItemOrCreatorWhereUserNotOwnerItem() {
         user.setId(1);
@@ -168,8 +168,10 @@ public class BookingServiceTests {
         Mockito
                 .when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.of(booking));
-        assertThrows(UserNotFoundException.class,()->bookingService.findBookingByOwnerItemOrCreator(1L,3L));
+        assertThrows(UserNotFoundException.class, () -> bookingService.findBookingByOwnerItemOrCreator(1L,
+                3L));
     }
+
     @Test
     public void testFindBookingByOwnerItemOrCreatorWhereUserValid() {
         user.setId(1);
@@ -177,9 +179,10 @@ public class BookingServiceTests {
         Mockito
                 .when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.of(booking));
-        Booking booking2=bookingService.findBookingByOwnerItemOrCreator(1L,user.getId());
-        assertEquals(booking.getStart(),booking2.getStart());
+        Booking booking2 = bookingService.findBookingByOwnerItemOrCreator(1L, user.getId());
+        assertEquals(booking.getStart(), booking2.getStart());
     }
+
     @Test
     public void testFindCreatorBookings() {
         user.setId(1);
@@ -187,7 +190,7 @@ public class BookingServiceTests {
         user2.setId(2);
         Mockito
                 .when(bookingRepository.findByBooker_IdOrderByEndDesc(anyLong(), any(PageRequest.class)))
-                .thenReturn(List.of(booking3,booking5,booking6));
+                .thenReturn(List.of(booking3, booking5, booking6));
         Mockito
                 .when(bookingRepository
                         .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
@@ -204,26 +207,29 @@ public class BookingServiceTests {
                                 any(LocalDateTime.class), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(List.of(booking3));
         Mockito
-                .when(bookingRepository.findByBooker_IdAndStatusEqualsOrderByEndDesc(2L,Status.WAITING,PageRequest.of(0,10)))
+                .when(bookingRepository.findByBooker_IdAndStatusEqualsOrderByEndDesc(2L, Status.WAITING,
+                        PageRequest.of(0, 10)))
                 .thenReturn(List.of(booking5));
 
 
-        List<Booking> bookings=bookingService.findCreatorBookings(2L,"ALL",0,10);
-        List<Booking>  bookings1=bookingService.findCreatorBookings(2L,"PAST",0,10);
-        List<Booking>  bookings2=bookingService.findCreatorBookings(2L,"FUTURE",0,10);
-        List<Booking>  bookings3=bookingService.findCreatorBookings(2L,"CURRENT",0,10);
-        List<Booking>  bookings4=bookingService.findCreatorBookings(2L,"WAITING",0,10);
-        assertEquals(3,bookings.size());
-        assertEquals(1,bookings1.size());
-        assertEquals(1,bookings2.size());
-        assertEquals(1,bookings3.size());
-        assertEquals(1,bookings4.size());
-        assertEquals(booking6.getStart(),bookings1.get(0).getStart());
-        assertEquals(booking5.getStart(),bookings2.get(0).getStart());
-        assertEquals(booking3.getStart(),bookings3.get(0).getStart());
-        assertEquals(Status.WAITING,bookings4.get(0).getStatus());
-        assertThrows(ValidationException.class,()->bookingService.findCreatorBookings(2L,"zzzzz",0,10));
+        List<Booking> bookings = bookingService.findCreatorBookings(2L, "ALL", 0, 10);
+        List<Booking> bookings1 = bookingService.findCreatorBookings(2L, "PAST", 0, 10);
+        List<Booking> bookings2 = bookingService.findCreatorBookings(2L, "FUTURE", 0, 10);
+        List<Booking> bookings3 = bookingService.findCreatorBookings(2L, "CURRENT", 0, 10);
+        List<Booking> bookings4 = bookingService.findCreatorBookings(2L, "WAITING", 0, 10);
+        assertEquals(3, bookings.size());
+        assertEquals(1, bookings1.size());
+        assertEquals(1, bookings2.size());
+        assertEquals(1, bookings3.size());
+        assertEquals(1, bookings4.size());
+        assertEquals(booking6.getStart(), bookings1.get(0).getStart());
+        assertEquals(booking5.getStart(), bookings2.get(0).getStart());
+        assertEquals(booking3.getStart(), bookings3.get(0).getStart());
+        assertEquals(Status.WAITING, bookings4.get(0).getStatus());
+        assertThrows(ValidationException.class, () -> bookingService.findCreatorBookings(2L, "zzzzz",
+                0, 10));
     }
+
     @Test
     public void testFindOwnerBookings() {
         user.setId(1);
@@ -231,7 +237,7 @@ public class BookingServiceTests {
         user2.setId(2);
         Mockito
                 .when(bookingRepository.findByItem_Owner_IdOrderByEndDesc(anyLong(), any(PageRequest.class)))
-                .thenReturn(List.of(booking3,booking5,booking6));
+                .thenReturn(List.of(booking3, booking5, booking6));
         Mockito
                 .when(bookingRepository
                         .findByItem_Owner_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
@@ -248,24 +254,26 @@ public class BookingServiceTests {
                                 any(LocalDateTime.class), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(List.of(booking3));
         Mockito
-                .when(bookingRepository.findByItem_Owner_IdAndStatusEqualsOrderByEndDesc(1L,Status.WAITING,PageRequest.of(0,10)))
+                .when(bookingRepository.findByItem_Owner_IdAndStatusEqualsOrderByEndDesc(1L, Status.WAITING,
+                        PageRequest.of(0, 10)))
                 .thenReturn(List.of(booking5));
 
 
-        List<Booking> bookings=bookingService.findOwnerBookings(1L,"ALL",0,10);
-        List<Booking>  bookings1=bookingService.findOwnerBookings(1L,"PAST",0,10);
-        List<Booking>  bookings2=bookingService.findOwnerBookings(1L,"FUTURE",0,10);
-        List<Booking>  bookings3=bookingService.findOwnerBookings(1L,"CURRENT",0,10);
-        List<Booking>  bookings4=bookingService.findOwnerBookings(1L,"WAITING",0,10);
-        assertEquals(3,bookings.size());
-        assertEquals(1,bookings1.size());
-        assertEquals(1,bookings2.size());
-        assertEquals(1,bookings3.size());
-        assertEquals(1,bookings4.size());
-        assertEquals(booking6.getStart(),bookings1.get(0).getStart());
-        assertEquals(booking5.getStart(),bookings2.get(0).getStart());
-        assertEquals(booking3.getStart(),bookings3.get(0).getStart());
-        assertEquals(Status.WAITING,bookings4.get(0).getStatus());
-        assertThrows(ValidationException.class,()->bookingService.findOwnerBookings(1L,"zzzzz",0,10));
+        List<Booking> bookings = bookingService.findOwnerBookings(1L, "ALL", 0, 10);
+        List<Booking> bookings1 = bookingService.findOwnerBookings(1L, "PAST", 0, 10);
+        List<Booking> bookings2 = bookingService.findOwnerBookings(1L, "FUTURE", 0, 10);
+        List<Booking> bookings3 = bookingService.findOwnerBookings(1L, "CURRENT", 0, 10);
+        List<Booking> bookings4 = bookingService.findOwnerBookings(1L, "WAITING", 0, 10);
+        assertEquals(3, bookings.size());
+        assertEquals(1, bookings1.size());
+        assertEquals(1, bookings2.size());
+        assertEquals(1, bookings3.size());
+        assertEquals(1, bookings4.size());
+        assertEquals(booking6.getStart(), bookings1.get(0).getStart());
+        assertEquals(booking5.getStart(), bookings2.get(0).getStart());
+        assertEquals(booking3.getStart(), bookings3.get(0).getStart());
+        assertEquals(Status.WAITING, bookings4.get(0).getStatus());
+        assertThrows(ValidationException.class, () -> bookingService.findOwnerBookings(1L, "zzzzz",
+                0, 10));
     }
 }
