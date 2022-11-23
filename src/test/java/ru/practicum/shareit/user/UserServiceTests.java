@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.exeption.UserNotFoundException;
+import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.user.model.User;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +27,7 @@ public class UserServiceTests {
 
     private UserService userService;
     User user = new User("Вася", "b@mail.ru");
+    User user2 = new User("Петя", "p@mail.ru");
     @Mock
     UserRepository userRepository;
 
@@ -58,4 +60,24 @@ public class UserServiceTests {
         assertEquals(user.getName(), user1.getName());
     }
 
+    @Test
+    public void testSetNewFieldsForUpdateEmptyUser() {
+        user2.setName(null);
+        user2.setEmail(null);
+        assertThrows(ValidationException.class, () -> userService.setNewFieldsForUpdate(user2, user));
+    }
+
+    @Test
+    public void testSetNewFieldsForUpdateEmptyName() {
+        user2.setName(null);
+        userService.setNewFieldsForUpdate(user2, user);
+        assertEquals(user2.getName(), user.getName());
+    }
+
+    @Test
+    public void testSetNewFieldsForUpdateEmptyEmail() {
+        user2.setEmail(null);
+        userService.setNewFieldsForUpdate(user2, user);
+        assertEquals(user2.getEmail(), user.getEmail());
+    }
 }

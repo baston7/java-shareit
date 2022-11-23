@@ -41,7 +41,7 @@ public class ItemServiceTests {
     User user3 = new User("Сережа", "s@mail.ru");
     Item item = new Item(1, "ручка", "шариковая", Boolean.TRUE);
     Item item2 = new Item(1, null, "чернильное", Boolean.TRUE);
-    Item item3 = new Item(3, "маркер", null, Boolean.TRUE);
+    Item item3 = new Item(3, "маркер", Boolean.TRUE);
     Item item4 = new Item(3, "карандаш", "мягкий", null);
     //текущая аренда
     Booking booking = new Booking(1, LocalDateTime.of(2022, 11, 1, 0, 0),

@@ -145,4 +145,5 @@ public class ItemRequestControllerTests {
                 .andExpect(jsonPath("$.description", is("Нужна ручка шариковая")))
                 .andExpect(jsonPath("$.requestorId", is(2)));
     }
+
 }
