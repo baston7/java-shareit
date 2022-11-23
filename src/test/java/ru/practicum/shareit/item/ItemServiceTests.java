@@ -96,7 +96,7 @@ public class ItemServiceTests {
         Mockito
                 .when(bookingRepository
                         .findTopByItem_IdAndStartIsAfterAndStatusIsNotAndStatusIsNotOrderByEndDesc(anyLong(),
-                        any(LocalDateTime.class), any(Status.class), any(Status.class)))
+                                any(LocalDateTime.class), any(Status.class), any(Status.class)))
                 .thenReturn(Optional.of(booking2));
 
         assertEquals(1, itemService.findUserItems(3, 0, 10).size());
@@ -179,6 +179,39 @@ public class ItemServiceTests {
         Comment comment = itemService.addComment(user2, item, "Хорошо");
         assertEquals("Хорошо", comment.getText());
         assertEquals(user2.getId(), comment.getAuthor().getId());
+    }
+
+    @Test
+    public void testSearchItems() {
+
+        Mockito
+                .when(itemRepository
+                        .search("ручка", PageRequest.of(0, 10)))
+                .thenReturn(List.of(item));
+        List<Item> items = itemService.searchItems("", 0, 10);
+        assertEquals(0, items.size());
+        List<Item> items2 = itemService.searchItems("ручка", 0, 10);
+        assertEquals(1, items2.size());
+    }
+
+    @Test
+    public void testAddItem() {
+        Mockito
+                .when(itemRepository
+                        .save(any(Item.class)))
+                .thenReturn(item);
+        Item item3 = itemService.addItem(item);
+        assertEquals(item.getName(), item3.getName());
+    }
+
+    @Test
+    public void testUpdateItem() {
+        Mockito
+                .when(itemRepository
+                        .save(any(Item.class)))
+                .thenReturn(item);
+        Item item3 = itemService.updateItem(item);
+        assertEquals(item.getName(), item3.getName());
     }
 }
 
