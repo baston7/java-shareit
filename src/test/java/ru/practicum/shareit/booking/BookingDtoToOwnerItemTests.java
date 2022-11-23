@@ -35,5 +35,6 @@ public class BookingDtoToOwnerItemTests {
         assertEquals(1, bookingDtoToOwnerItem.getId());
         assertEquals(3, bookingDtoToOwnerItem.getBookerId());
         assertEquals(Status.APPROVED, bookingDtoToOwnerItem.getStatus());
+        assertEquals(booking.getEnd(), bookingDtoToOwnerItem.getEnd());
     }
 }
