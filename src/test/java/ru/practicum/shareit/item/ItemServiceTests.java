@@ -219,5 +219,15 @@ public class ItemServiceTests {
         item.setAvailable(false);
         assertThrows(ValidationException.class, () -> itemService.checkAvailable(item));
     }
+
+    @Test
+    public void findItemsByRequest() {
+        Mockito
+                .when(itemRepository
+                        .findAllByRequestId(anyLong()))
+                .thenReturn(List.of(item));
+        List<Item> items = itemService.findItemsByRequest(1);
+        assertEquals(items.get(0).getName(), item.getName());
+    }
 }
 
