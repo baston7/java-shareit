@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class BookingDtoToUser {
     private Long id;

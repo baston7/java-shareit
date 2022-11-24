@@ -26,10 +26,10 @@ public class ItemController {
     private final ItemService itemService;
     private final ItemRequestService itemRequestService;
     private final UserService userService;
-    private final String headerName = "X-Sharer-User-Id";
+    private static final String HEADER_NAME = "X-Sharer-User-Id";
 
     @PostMapping()
-    public ItemDto addItem(@RequestHeader(headerName) long userId, @RequestBody @Valid ItemDto itemDto) {
+    public ItemDto addItem(@RequestHeader(HEADER_NAME) long userId, @RequestBody @Valid ItemDto itemDto) {
         User user = userService.getUser(userId);
         Item item;
         if (itemDto.getRequestId() != null) {
@@ -42,7 +42,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(headerName) long userId, @PathVariable long itemId,
+    public ItemDto updateItem(@RequestHeader(HEADER_NAME) long userId, @PathVariable long itemId,
                               @RequestBody ItemDto itemDto) {
         User user = userService.getUser(userId);
         Item oldItem = itemService.findItem(itemId);
@@ -55,7 +55,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoToUser findItem(@RequestHeader(headerName) long userId, @PathVariable long itemId) {
+    public ItemDtoToUser findItem(@RequestHeader(HEADER_NAME) long userId, @PathVariable long itemId) {
         userService.getUser(userId);
         if (itemService.findItem(itemId).getOwner().getId() != userId) {
             return ItemMapper.toItemDtoToUser(itemService.findItem(itemId), itemService.getComments(itemId));
@@ -67,7 +67,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoToUser> findUserItems(@RequestHeader(headerName) long userId,
+    public List<ItemDtoToUser> findUserItems(@RequestHeader(HEADER_NAME) long userId,
                                              @RequestParam(defaultValue = "0") @Min(0) int from,
                                              @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(userId);
@@ -75,7 +75,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItems(@RequestHeader(headerName) long userId, @RequestParam String text,
+    public List<ItemDto> searchItems(@RequestHeader(HEADER_NAME) long userId, @RequestParam String text,
                                      @RequestParam(defaultValue = "0") @Min(0) int from,
                                      @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(userId);
@@ -85,7 +85,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader(headerName) long userId, @PathVariable long itemId,
+    public CommentDto addComment(@RequestHeader(HEADER_NAME) long userId, @PathVariable long itemId,
                                  @RequestBody @Valid CommentDto commentDto) {
         User user = userService.getUser(userId);
         Item item = itemService.findItem(itemId);

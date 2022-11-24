@@ -12,13 +12,12 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDtoFromUser {
     @NotNull(message = "Не указан id запрашиваемой вещи")
-    Long itemId;
+    private Long itemId;
     @FutureOrPresent(message = "Время начала аренды должно быть в настоящем или будущем времени")
-    LocalDateTime start;
+    private LocalDateTime start;
     @Future(message = "Время конца аренды должно быть в будущем времени")
-    LocalDateTime end;
+    private LocalDateTime end;
 }
 

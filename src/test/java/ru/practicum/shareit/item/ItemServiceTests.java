@@ -86,16 +86,16 @@ public class ItemServiceTests {
                 .when(itemRepository.findAllByOwnerIdOrderById(3, PageRequest.of(0, 10)))
                 .thenReturn(List.of(item));
         Mockito
-                .when(commentRepository.findCommentsByItem_Id(anyLong()))
+                .when(commentRepository.findCommentsByItemId(anyLong()))
                 .thenReturn(Collections.emptyList());
         Mockito
                 .when(bookingRepository
-                        .findTopByItem_IdAndEndIsBeforeAndStatusIsOrderByEndDesc(anyLong(),
+                        .findTopByItemIdAndEndIsBeforeAndStatusIsOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class), any(Status.class)))
                 .thenReturn(Optional.of(booking3));
         Mockito
                 .when(bookingRepository
-                        .findTopByItem_IdAndStartIsAfterAndStatusIsNotAndStatusIsNotOrderByEndDesc(anyLong(),
+                        .findTopByItemIdAndStartIsAfterAndStatusIsNotAndStatusIsNotOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class), any(Status.class), any(Status.class)))
                 .thenReturn(Optional.of(booking2));
 
@@ -153,7 +153,7 @@ public class ItemServiceTests {
         item.setOwner(user);
         Mockito
                 .when(bookingRepository
-                        .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
+                        .findByBookerIdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class),
                                 any(LocalDateTime.class)))
                 .thenReturn(Collections.emptyList());
@@ -168,7 +168,7 @@ public class ItemServiceTests {
         List<Booking> bookings = List.of(booking3);
         Mockito
                 .when(bookingRepository
-                        .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
+                        .findByBookerIdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class),
                                 any(LocalDateTime.class)))
                 .thenReturn(bookings);
@@ -212,6 +212,12 @@ public class ItemServiceTests {
                 .thenReturn(item);
         Item item3 = itemService.updateItem(item);
         assertEquals(item.getName(), item3.getName());
+    }
+
+    @Test
+    public void testCheckAvailable() {
+        item.setAvailable(false);
+        assertThrows(ValidationException.class, () -> itemService.checkAvailable(item));
     }
 }
 

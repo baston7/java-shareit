@@ -24,10 +24,10 @@ public class ItemRequestController {
     private final UserService userService;
     private final ItemService itemService;
     private final ItemRequestService itemRequestService;
-    private final String headerName = "X-Sharer-User-Id";
+    private static final String HEADER_NAME = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemRequestDto addRequest(@RequestHeader(headerName) long userId,
+    public ItemRequestDto addRequest(@RequestHeader(HEADER_NAME) long userId,
                                      @RequestBody @Valid ItemRequestDto itemRequestDto) {
         User requestor = userService.getUser(userId);
         ItemRequest itemRequest = itemRequestService.addRequest(ItemRequestMapper.toItemRequest(itemRequestDto,
@@ -36,7 +36,7 @@ public class ItemRequestController {
     }
 
     @GetMapping
-    public List<ItemRequestDto> findUserRequests(@RequestHeader(headerName) long userId) {
+    public List<ItemRequestDto> findUserRequests(@RequestHeader(HEADER_NAME) long userId) {
         userService.getUser(userId);
         List<ItemRequest> requests = itemRequestService.findUserRequests(userId);
 
@@ -47,7 +47,7 @@ public class ItemRequestController {
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDto> findAllRequests(@RequestHeader(headerName) long userId,
+    public List<ItemRequestDto> findAllRequests(@RequestHeader(HEADER_NAME) long userId,
                                                 @RequestParam(defaultValue = "0") @Min(0) int from,
                                                 @RequestParam(defaultValue = "10") @Min(1) int size) {
         userService.getUser(userId);
@@ -59,7 +59,7 @@ public class ItemRequestController {
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDto findUserRequest(@RequestHeader(headerName) long userId, @PathVariable long requestId) {
+    public ItemRequestDto findUserRequest(@RequestHeader(HEADER_NAME) long userId, @PathVariable long requestId) {
         userService.getUser(userId);
         List<Item> items = itemService.findItemsByRequest(requestId);
         return ItemRequestMapper.toItemRequestDto(itemRequestService.findOneRequest(requestId), items);

@@ -118,7 +118,7 @@ public class BookingServiceTests {
                 .thenReturn(Optional.of(booking));
         Mockito
                 .when(bookingRepository
-                        .findByItem_Owner_IdAndEndIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class),
+                        .findByItemOwnerIdAndEndIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class),
                                 any(Status.class)))
                 .thenReturn(Collections.emptyList());
         Mockito
@@ -140,7 +140,7 @@ public class BookingServiceTests {
                 .thenReturn(Optional.of(booking));
         Mockito
                 .when(bookingRepository
-                        .findByItem_Owner_IdAndEndIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class),
+                        .findByItemOwnerIdAndEndIsAfterAndStatusIs(anyLong(), any(LocalDateTime.class),
                                 any(Status.class)))
                 .thenReturn(List.of(booking4));
         Mockito
@@ -189,25 +189,25 @@ public class BookingServiceTests {
         item.setOwner(user);
         user2.setId(2);
         Mockito
-                .when(bookingRepository.findByBooker_IdOrderByEndDesc(anyLong(), any(PageRequest.class)))
+                .when(bookingRepository.findByBookerIdOrderByEndDesc(anyLong(), any(PageRequest.class)))
                 .thenReturn(List.of(booking3, booking5, booking6));
         Mockito
                 .when(bookingRepository
-                        .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
+                        .findByBookerIdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(List.of(booking6));
         Mockito
                 .when(bookingRepository
-                        .findByBooker_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(anyLong(),
+                        .findByBookerIdAndStartIsAfterAndEndIsAfterOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(List.of(booking5));
         Mockito
                 .when(bookingRepository
-                        .findByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(anyLong(),
+                        .findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(List.of(booking3));
         Mockito
-                .when(bookingRepository.findByBooker_IdAndStatusEqualsOrderByEndDesc(2L, Status.WAITING,
+                .when(bookingRepository.findByBookerIdAndStatusEqualsOrderByEndDesc(2L, Status.WAITING,
                         PageRequest.of(0, 10)))
                 .thenReturn(List.of(booking5));
 
@@ -236,25 +236,25 @@ public class BookingServiceTests {
         item.setOwner(user);
         user2.setId(2);
         Mockito
-                .when(bookingRepository.findByItem_Owner_IdOrderByEndDesc(anyLong(), any(PageRequest.class)))
+                .when(bookingRepository.findByItemOwnerIdOrderByEndDesc(anyLong(), any(PageRequest.class)))
                 .thenReturn(List.of(booking3, booking5, booking6));
         Mockito
                 .when(bookingRepository
-                        .findByItem_Owner_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
+                        .findByItemOwnerIdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(List.of(booking6));
         Mockito
                 .when(bookingRepository
-                        .findByItem_Owner_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(anyLong(),
+                        .findByItemOwnerIdAndStartIsAfterAndEndIsAfterOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(List.of(booking5));
         Mockito
                 .when(bookingRepository
-                        .findByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(anyLong(),
+                        .findByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(anyLong(),
                                 any(LocalDateTime.class), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(List.of(booking3));
         Mockito
-                .when(bookingRepository.findByItem_Owner_IdAndStatusEqualsOrderByEndDesc(1L, Status.WAITING,
+                .when(bookingRepository.findByItemOwnerIdAndStatusEqualsOrderByEndDesc(1L, Status.WAITING,
                         PageRequest.of(0, 10)))
                 .thenReturn(List.of(booking5));
 

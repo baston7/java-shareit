@@ -13,7 +13,6 @@ import java.util.List;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
-@NoArgsConstructor
 public class ItemDtoToUser {
     long id;
     String name;

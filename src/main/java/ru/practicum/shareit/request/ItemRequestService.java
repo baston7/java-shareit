@@ -19,7 +19,7 @@ public class ItemRequestService {
 
 
     public List<ItemRequest> findUserRequests(long userId) {
-        return itemRequestRepository.findItemRequestByRequestor_IdOrderByCreatedDesc(userId);
+        return itemRequestRepository.findItemRequestByRequestorIdOrderByCreatedDesc(userId);
     }
 
 

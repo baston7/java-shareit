@@ -6,7 +6,6 @@ import ru.practicum.shareit.booking.Status;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class BookingDtoToOwnerItem {
     private Long id;

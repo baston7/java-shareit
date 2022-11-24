@@ -56,26 +56,26 @@ public class BookingService {
             List<Booking> bookingList;
             switch (state1) {
                 case ALL:
-                    bookingList = bookingRepository.findByBooker_IdOrderByEndDesc(creatorId, PageRequest.of(page, size));
+                    bookingList = bookingRepository.findByBookerIdOrderByEndDesc(creatorId, PageRequest.of(page, size));
                     break;
                 case PAST:
                     bookingList = bookingRepository
-                            .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(creatorId,
+                            .findByBookerIdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(creatorId,
                                     LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 case FUTURE:
                     bookingList = bookingRepository
-                            .findByBooker_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(creatorId,
+                            .findByBookerIdAndStartIsAfterAndEndIsAfterOrderByEndDesc(creatorId,
                                     LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 case CURRENT:
                     bookingList = bookingRepository
-                            .findByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(creatorId,
+                            .findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(creatorId,
                                     LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 default:
                     Status status = Status.valueOf(state);
-                    bookingList = bookingRepository.findByBooker_IdAndStatusEqualsOrderByEndDesc(creatorId, status,
+                    bookingList = bookingRepository.findByBookerIdAndStatusEqualsOrderByEndDesc(creatorId, status,
                             PageRequest.of(page, size));
                     break;
             }
@@ -91,27 +91,27 @@ public class BookingService {
             List<Booking> bookingList;
             switch (state1) {
                 case ALL:
-                    bookingList = bookingRepository.findByItem_Owner_IdOrderByEndDesc(ownerId, PageRequest.of(page,
+                    bookingList = bookingRepository.findByItemOwnerIdOrderByEndDesc(ownerId, PageRequest.of(page,
                             size));
                     break;
                 case PAST:
                     bookingList = bookingRepository
-                            .findByItem_Owner_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(ownerId,
+                            .findByItemOwnerIdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(ownerId,
                                     LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 case FUTURE:
                     bookingList = bookingRepository
-                            .findByItem_Owner_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(ownerId,
+                            .findByItemOwnerIdAndStartIsAfterAndEndIsAfterOrderByEndDesc(ownerId,
                                     LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 case CURRENT:
                     bookingList = bookingRepository
-                            .findByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(ownerId,
+                            .findByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(ownerId,
                                     LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 default:
                     Status status = Status.valueOf(state);
-                    bookingList = bookingRepository.findByItem_Owner_IdAndStatusEqualsOrderByEndDesc(ownerId, status,
+                    bookingList = bookingRepository.findByItemOwnerIdAndStatusEqualsOrderByEndDesc(ownerId, status,
                             PageRequest.of(page, size));
                     break;
             }
@@ -136,7 +136,7 @@ public class BookingService {
         LocalDateTime startTime = booking.getStart();
         LocalDateTime endTime = booking.getEnd();
         List<Booking> approvedBookingsFutureOrPresent = bookingRepository
-                .findByItem_Owner_IdAndEndIsAfterAndStatusIs(ownerId, LocalDateTime.now(), Status.APPROVED);
+                .findByItemOwnerIdAndEndIsAfterAndStatusIs(ownerId, LocalDateTime.now(), Status.APPROVED);
         if (approvedBookingsFutureOrPresent.isEmpty()) {
             return true;
         }

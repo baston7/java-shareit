@@ -58,7 +58,7 @@ public class ItemRequestServiceTests {
     @Test
     public void testFindUserRequests() {
         Mockito
-                .when(itemRequestRepository.findItemRequestByRequestor_IdOrderByCreatedDesc(anyLong()))
+                .when(itemRequestRepository.findItemRequestByRequestorIdOrderByCreatedDesc(anyLong()))
                 .thenReturn(List.of(request));
         List<ItemRequest> requests = service.findUserRequests(1);
         assertEquals(1, requests.get(0).getId());
