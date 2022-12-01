@@ -24,7 +24,7 @@ public class BookingController {
     private final BookingService bookingService;
     private final ItemService itemService;
     private final UserService userService;
-    private static final String HEADER_NAME = "X-Sharer-User-Id";
+    private static  final String HEADER_NAME = "X-Sharer-User-Id";
 
     @PostMapping
     public BookingDtoToUser addBooking(@RequestHeader(HEADER_NAME) long creatorId,
