@@ -22,8 +22,8 @@ public class User {
     @Column(unique = true)
     String email;
 
-    public User(long id, String name) {
-        this.id = id;
+    public User(String name, String email) {
         this.name = name;
+        this.email = email;
     }
 }

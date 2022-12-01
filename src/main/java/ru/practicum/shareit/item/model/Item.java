@@ -24,7 +24,9 @@ public class Item {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id")
     User owner;
-    @Transient
+
+    @ManyToOne
+    @JoinColumn(name = "request_id")
     ItemRequest request;
 
     public Item(long id, String name, String description, Boolean available) {
@@ -34,9 +36,24 @@ public class Item {
         this.available = available;
     }
 
+    public Item(long id, String name, String description, Boolean available, ItemRequest request) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.request = request;
+    }
+
     public Item(long id, String name, Boolean available) {
         this.id = id;
         this.name = name;
         this.available = available;
+    }
+
+    public Item(String name, String description, Boolean available, ItemRequest request) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.request = request;
     }
 }

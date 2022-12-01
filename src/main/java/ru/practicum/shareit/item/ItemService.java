@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -39,12 +40,11 @@ public class ItemService {
         return itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
     }
 
-    public List<ItemDtoToUser> findUserItems(long userId) {
-        List<Item> ownerItems = itemRepository.findAllByOwnerIdOrderById(userId);
+    public List<ItemDtoToUser> findUserItems(long userId, int page, int size) {
+        List<Item> ownerItems = itemRepository.findAllByOwnerIdOrderById(userId, PageRequest.of(page, size));
         if (ownerItems.isEmpty()) {
             throw new ItemNotFoundException("Не найдено вещей у пользователя");
         }
-
         List<ItemDtoToUser> ownerItemsAndBookings = ownerItems.stream()
                 .map(item -> new ItemDtoToUser(item.getId(), item.getName(), item.getDescription(),
                         item.getAvailable(), null, null, getComments(item.getId())))
@@ -52,10 +52,10 @@ public class ItemService {
         ownerItemsAndBookings
                 .forEach(item -> {
                     Optional<Booking> lastBooking = bookingRepository
-                            .findTopByItem_IdAndEndIsBeforeAndStatusIsOrderByEndDesc(item.getId(),
+                            .findTopByItemIdAndEndIsBeforeAndStatusIsOrderByEndDesc(item.getId(),
                                     LocalDateTime.now(), Status.APPROVED);
                     Optional<Booking> nextBooking = bookingRepository
-                            .findTopByItem_IdAndStartIsAfterAndStatusIsNotAndStatusIsNotOrderByEndDesc(item.getId(),
+                            .findTopByItemIdAndStartIsAfterAndStatusIsNotAndStatusIsNotOrderByEndDesc(item.getId(),
                                     LocalDateTime.now(), Status.CANCELED, Status.REJECTED);
                     nextBooking.ifPresent(booking -> item.setNextBooking(BookingMapper
                             .toBookingDtoToOwnerItemToUser(booking)));
@@ -65,11 +65,11 @@ public class ItemService {
         return ownerItemsAndBookings;
     }
 
-    public List<Item> searchItems(String text) {
+    public List<Item> searchItems(String text, int page, int size) {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        return itemRepository.search(text);
+        return itemRepository.search(text, PageRequest.of(page, size));
     }
 
     public void setNewFieldsForUpdate(Item newItem, Item oldItem) {
@@ -101,7 +101,7 @@ public class ItemService {
             throw new ValidationException("Пользователь не имеет право оставлять комментарий на свою вещь");
         }
         List<Booking> bookings = bookingRepository
-                .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(user.getId(),
+                .findByBookerIdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(user.getId(),
                         LocalDateTime.now(), LocalDateTime.now()).stream()
                 .filter(booking -> booking.getStatus().equals(Status.APPROVED))
                 .collect(Collectors.toList());
@@ -113,7 +113,17 @@ public class ItemService {
     }
 
     public List<CommentDto> getComments(long itemId) {
-        List<Comment> comments = commentRepository.findCommentsByItem_Id(itemId);
+        List<Comment> comments = commentRepository.findCommentsByItemId(itemId);
         return comments.stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
+    }
+
+    public List<Item> findItemsByRequest(long requestId) {
+        return itemRepository.findAllByRequestId(requestId);
+    }
+
+    public void checkAvailable(Item item) {
+        if (!item.getAvailable()) {
+            throw new ValidationException("Вещь не доступна ");
+        }
     }
 }

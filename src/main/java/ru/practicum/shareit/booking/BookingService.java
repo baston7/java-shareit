@@ -1,9 +1,9 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exeption.BookingNotFoundException;
-import ru.practicum.shareit.exeption.ItemNotFoundException;
 import ru.practicum.shareit.exeption.UserNotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 
@@ -25,7 +25,7 @@ public class BookingService {
 
     public Booking updateStatusBooking(Long bookingId, Long ownerId, boolean approved) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ItemNotFoundException("Заявка на аренду не найдена"));
+                .orElseThrow(() -> new BookingNotFoundException("Заявка на аренду не найдена"));
         if (booking.getItem().getOwner().getId() != ownerId) {
             throw new UserNotFoundException("Не найден пользователь с правом на обновление статуса заявки");
         }
@@ -42,39 +42,41 @@ public class BookingService {
 
     public Booking findBookingByOwnerItemOrCreator(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ItemNotFoundException("Заявка на аренду не найдена"));
+                .orElseThrow(() -> new BookingNotFoundException("Заявка на аренду не найдена"));
         if (booking.getItem().getOwner().getId() != userId && booking.getBooker().getId() != userId) {
             throw new UserNotFoundException("Не найден пользователь с правом на просмотр статуса заявки");
         }
+
         return booking;
     }
 
-    public List<Booking> findCreatorBookings(Long creatorId, String state) {
+    public List<Booking> findCreatorBookings(Long creatorId, String state, int page, int size) {
         try {
             State state1 = State.valueOf(state);
             List<Booking> bookingList;
             switch (state1) {
                 case ALL:
-                    bookingList = bookingRepository.findByBooker_IdOrderByEndDesc(creatorId);
+                    bookingList = bookingRepository.findByBookerIdOrderByEndDesc(creatorId, PageRequest.of(page, size));
                     break;
                 case PAST:
                     bookingList = bookingRepository
-                            .findByBooker_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(creatorId,
-                                    LocalDateTime.now(), LocalDateTime.now());
+                            .findByBookerIdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(creatorId,
+                                    LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 case FUTURE:
                     bookingList = bookingRepository
-                            .findByBooker_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(creatorId,
-                                    LocalDateTime.now(), LocalDateTime.now());
+                            .findByBookerIdAndStartIsAfterAndEndIsAfterOrderByEndDesc(creatorId,
+                                    LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 case CURRENT:
                     bookingList = bookingRepository
-                            .findByBooker_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(creatorId,
-                                    LocalDateTime.now(), LocalDateTime.now());
+                            .findByBookerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(creatorId,
+                                    LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 default:
                     Status status = Status.valueOf(state);
-                    bookingList = bookingRepository.findByBooker_IdAndStatusEqualsOrderByEndDesc(creatorId, status);
+                    bookingList = bookingRepository.findByBookerIdAndStatusEqualsOrderByEndDesc(creatorId, status,
+                            PageRequest.of(page, size));
                     break;
             }
             return bookingList;
@@ -83,32 +85,34 @@ public class BookingService {
         }
     }
 
-    public List<Booking> findOwnerBookings(Long ownerId, String state) {
+    public List<Booking> findOwnerBookings(Long ownerId, String state, int page, int size) {
         try {
             State state1 = State.valueOf(state);
             List<Booking> bookingList;
             switch (state1) {
                 case ALL:
-                    bookingList = bookingRepository.findByItem_Owner_IdOrderByEndDesc(ownerId);
+                    bookingList = bookingRepository.findByItemOwnerIdOrderByEndDesc(ownerId, PageRequest.of(page,
+                            size));
                     break;
                 case PAST:
                     bookingList = bookingRepository
-                            .findByItem_Owner_IdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(ownerId,
-                                    LocalDateTime.now(), LocalDateTime.now());
+                            .findByItemOwnerIdAndStartIsBeforeAndEndIsBeforeOrderByEndDesc(ownerId,
+                                    LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 case FUTURE:
                     bookingList = bookingRepository
-                            .findByItem_Owner_IdAndStartIsAfterAndEndIsAfterOrderByEndDesc(ownerId,
-                                    LocalDateTime.now(), LocalDateTime.now());
+                            .findByItemOwnerIdAndStartIsAfterAndEndIsAfterOrderByEndDesc(ownerId,
+                                    LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 case CURRENT:
                     bookingList = bookingRepository
-                            .findByItem_Owner_IdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(ownerId,
-                                    LocalDateTime.now(), LocalDateTime.now());
+                            .findByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByEndDesc(ownerId,
+                                    LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(page, size));
                     break;
                 default:
                     Status status = Status.valueOf(state);
-                    bookingList = bookingRepository.findByItem_Owner_IdAndStatusEqualsOrderByEndDesc(ownerId, status);
+                    bookingList = bookingRepository.findByItemOwnerIdAndStatusEqualsOrderByEndDesc(ownerId, status,
+                            PageRequest.of(page, size));
                     break;
             }
             return bookingList;
@@ -132,7 +136,7 @@ public class BookingService {
         LocalDateTime startTime = booking.getStart();
         LocalDateTime endTime = booking.getEnd();
         List<Booking> approvedBookingsFutureOrPresent = bookingRepository
-                .findByItem_Owner_IdAndEndIsAfterAndStatusIs(ownerId, LocalDateTime.now(), Status.APPROVED);
+                .findByItemOwnerIdAndEndIsAfterAndStatusIs(ownerId, LocalDateTime.now(), Status.APPROVED);
         if (approvedBookingsFutureOrPresent.isEmpty()) {
             return true;
         }

@@ -8,7 +8,6 @@ import ru.practicum.shareit.booking.dto.BookingDtoToOwnerItem;
 
 import java.util.List;
 
-
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
