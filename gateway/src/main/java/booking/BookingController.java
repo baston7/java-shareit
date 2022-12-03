@@ -20,9 +20,10 @@ import javax.validation.constraints.PositiveOrZero;
 @Validated
 public class BookingController {
 	private final BookingClient bookingClient;
+	private static final String HEADER_NAME = "X-Sharer-User-Id";
 
 	@GetMapping
-	public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") long userId,
+	public ResponseEntity<Object> getBookings(@RequestHeader(HEADER_NAME) long userId,
 			@RequestParam(name = "state", defaultValue = "all") String stateParam,
 			@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 			@Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -33,20 +34,20 @@ public class BookingController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
+	public ResponseEntity<Object> bookItem(@RequestHeader(HEADER_NAME) long userId,
 			@RequestBody @Valid BookingDtoFromUser requestDto) {
 		log.info("Creating booking {}, userId={}", requestDto, userId);
 		return bookingClient.bookItem(userId, requestDto);
 	}
 
 	@GetMapping("/{bookingId}")
-	public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") long userId,
+	public ResponseEntity<Object> getBooking(@RequestHeader(HEADER_NAME) long userId,
 			@PathVariable Long bookingId) {
 		log.info("Get booking {}, userId={}", bookingId, userId);
 		return bookingClient.getBooking(userId, bookingId);
 	}
 	@GetMapping("/owner")
-	public ResponseEntity<Object> findOwnerBookings(@RequestHeader("X-Sharer-User-Id") long userId,
+	public ResponseEntity<Object> findOwnerBookings(@RequestHeader(HEADER_NAME) long userId,
 													@RequestParam(name = "state", defaultValue = "all") String stateParam,
 													@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
 													@Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
@@ -56,7 +57,7 @@ public class BookingController {
 		return bookingClient.getBookingsOwner(userId, state, from, size);
 	}
 	@PatchMapping("/{bookingId}")
-	public ResponseEntity<Object> updateStatusBooking(@RequestHeader("X-Sharer-User-Id") long ownerId, @PathVariable long bookingId,
+	public ResponseEntity<Object> updateStatusBooking(@RequestHeader(HEADER_NAME) long ownerId, @PathVariable long bookingId,
 												@RequestParam boolean approved) {
 		return bookingClient.updateStatusBooking(ownerId,bookingId,approved);
 	}
