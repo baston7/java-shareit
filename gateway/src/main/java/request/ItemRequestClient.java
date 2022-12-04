@@ -11,7 +11,7 @@ import request.dto.ItemRequestDto;
 
 import java.util.Map;
 
-public class ItemRequestClient  extends BaseClient {
+public class ItemRequestClient extends BaseClient {
     private static final String API_PREFIX = "/requests";
 
     @Autowired
@@ -35,9 +35,11 @@ public class ItemRequestClient  extends BaseClient {
     public ResponseEntity<Object> getUserRequests(long userId) {
         return get("", userId);
     }
-    public ResponseEntity<Object> getUserRequest(long userId,long requestId) {
+
+    public ResponseEntity<Object> getUserRequest(long userId, long requestId) {
         return get("/" + requestId, userId);
     }
+
     public ResponseEntity<Object> addRequest(long userId, ItemRequestDto requestDto) {
         return post("", userId, requestDto);
     }
