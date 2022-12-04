@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import java.util.Map;
+
 @Service
 public class ItemClient extends BaseClient {
     private static final String API_PREFIX = "/items";
@@ -42,7 +43,6 @@ public class ItemClient extends BaseClient {
         );
         return get("/search/?text={text}&from={from}&size={size}", userId, parameters);
     }
-
 
     public ResponseEntity<Object> addItem(long userId, ItemDto itemDto) {
         return post("", userId, itemDto);
