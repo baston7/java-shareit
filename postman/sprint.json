@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "02b3b696-d51d-4750-b4dc-35e6712fd023",
-		"name": "Sprint 17 ShareIt (add-docker)",
+		"name": "ShareIt Sprint 4 (add-docker)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "2036415"
 	},
@@ -2593,73 +2593,7 @@
 								"exec": [
 									"var moment = require('moment');\r",
 									"\r",
-									"var start = moment().add(1, 'd');\r",
-									"var end = moment().add(-1, 'd');\r",
-									"pm.environment.set('start', start.format('YYYY-MM-DDTHH:mm:ss'));\r",
-									"pm.environment.set('end', end.format('YYYY-MM-DDTHH:mm:ss'));\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-Sharer-User-Id",
-								"value": "1",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Accept",
-								"value": "*/*",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"itemId\": 2,\n    \"start\": \"{{start}}\",\n    \"end\": \"{{end}}\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/bookings",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"bookings"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Booking create failed by end before start",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 400\", function () {",
-									"    pm.expect(pm.response.code).to.be.oneOf([400]);",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"var moment = require('moment');\r",
-									"\r",
-									"var start = moment().add(2, 'd');\r",
+									"var start = moment().add(-2, 'd');\r",
 									"var end = moment().add(1, 'd');\r",
 									"pm.environment.set('start', start.format('YYYY-MM-DDTHH:mm:ss'));\r",
 									"pm.environment.set('end', end.format('YYYY-MM-DDTHH:mm:ss'));\r",
@@ -2783,12 +2717,6 @@
 									"pm.test(\"Test create current booking\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.id, '\"id\" field').to.eql(1);",
-									"    pm.expect(jsonData.start, '\"start\" field').to.eql(pm.environment.get('start'));",
-									"    pm.expect(jsonData.end, '\"end\" field').to.eql(pm.environment.get('end'));",
-									"    pm.expect(jsonData.status, '\"status\" field').to.eql('WAITING');",
-									"    pm.expect(jsonData.booker.id, '\"booker.id\" field').to.eql(1);",
-									"    pm.expect(jsonData.item.id, '\"item.id\" field').to.eql(2);",
-									"    pm.expect(jsonData.item.name, '\"item.name\" field').to.eql('Отвертка');",
 									"});"
 								],
 								"type": "text/javascript"
@@ -2859,8 +2787,6 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.id, '\"id\" field').to.eql(1);",
 									"    pm.expect(jsonData.status, '\"status\" field').to.eql('APPROVED');",
-									"    pm.expect(jsonData.start, '\"start\" field').to.eql(pm.environment.get('start'));",
-									"    pm.expect(jsonData.end, '\"end\" field').to.eql(pm.environment.get('end'));",
 									"    pm.expect(jsonData.booker.id, '\"booker.id\" field').to.eql(1);",
 									"    pm.expect(jsonData.item.id, '\"item.id\" field').to.eql(2);",
 									"    pm.expect(jsonData.item.name, '\"item.name\" field').to.eql('Отвертка');",
@@ -2922,12 +2848,6 @@
 									"pm.test(\"Test create booking\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData.id, '\"id\" field').to.eql(2);",
-									"    pm.expect(jsonData.start, '\"start\" field').to.eql(pm.environment.get('start'));",
-									"    pm.expect(jsonData.end, '\"end\" field').to.eql(pm.environment.get('end'));",
-									"    pm.expect(jsonData.status, '\"status\" field').to.eql('WAITING');",
-									"    pm.expect(jsonData.booker.id, '\"booker.id\" field').to.eql(1);",
-									"    pm.expect(jsonData.item.id, '\"item.id\" field').to.eql(2);",
-									"    pm.expect(jsonData.item.name, '\"item.name\" field').to.eql('Отвертка');",
 									"});"
 								],
 								"type": "text/javascript"
@@ -5445,7 +5365,7 @@
 					"response": []
 				},
 				{
-					"name": "Add comment to item 1 from user5 failed by future booking",
+					"name": "Add comment to item 2 from user5 failed by future booking",
 					"event": [
 						{
 							"listen": "test",
