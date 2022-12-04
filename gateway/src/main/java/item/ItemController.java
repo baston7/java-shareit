@@ -1,6 +1,5 @@
 package item;
 
-import booking.BookingClient;
 import exeption.ValidationException;
 import item.dto.CommentDto;
 import item.dto.ItemDto;
@@ -21,8 +20,9 @@ public class ItemController {
     private static final String HEADER_NAME = "X-Sharer-User-Id";
 
     @PostMapping()
-    public ResponseEntity<Object> addItem(@RequestHeader(HEADER_NAME) long userId, @RequestBody @Valid ItemDto itemDto) {
-     return itemClient.addItem(userId,itemDto);
+    public ResponseEntity<Object> addItem(@RequestHeader(HEADER_NAME) long userId,
+                                          @RequestBody @Valid ItemDto itemDto) {
+        return itemClient.addItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
@@ -31,7 +31,7 @@ public class ItemController {
         if (itemDto.getName() == null && itemDto.getDescription() == null && itemDto.getAvailable() == null) {
             throw new ValidationException("Поля значений пустые");
         }
-        return itemClient.updateItem(userId,itemId,itemDto);
+        return itemClient.updateItem(userId, itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")

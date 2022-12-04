@@ -1,7 +1,5 @@
 package user;
 
-import booking.dto.BookingDtoFromUser;
-import booking.dto.BookingState;
 import client.BaseClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +9,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import user.dto.UserDto;
 
-import java.util.Map;
 
 public class UserClient extends BaseClient {
     private static final String API_PREFIX = "/users";

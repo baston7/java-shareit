@@ -1,6 +1,6 @@
 package user;
 
-import booking.BookingClient;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +15,7 @@ import javax.validation.Valid;
 @Validated
 public class UserController {
     private final UserClient userClient;
+
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getUser(@PathVariable long userId) {
         return userClient.getUser(userId);
@@ -32,7 +33,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> updateUser(@RequestBody UserDto userDto, @PathVariable long id) {
-        return userClient.updateUser(id,userDto);
+        return userClient.updateUser(id, userDto);
     }
 
     @DeleteMapping("/{id}")
