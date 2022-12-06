@@ -51,9 +51,9 @@ public class BookingService {
     }
 
     public List<Booking> findCreatorBookings(Long creatorId, String state, int page, int size) {
-        State state1 = State.valueOf(state);
+        State createdState = State.valueOf(state);
         List<Booking> bookingList;
-        switch (state1) {
+        switch (createdState) {
             case ALL:
                 bookingList = bookingRepository.findByBookerIdOrderByEndDesc(creatorId, PageRequest.of(page, size));
                 break;
@@ -82,9 +82,9 @@ public class BookingService {
     }
 
     public List<Booking> findOwnerBookings(Long ownerId, String state, int page, int size) {
-        State state1 = State.valueOf(state);
+        State createdState = State.valueOf(state);
         List<Booking> bookingList;
-        switch (state1) {
+        switch (createdState) {
             case ALL:
                 bookingList = bookingRepository.findByItemOwnerIdOrderByEndDesc(ownerId, PageRequest.of(page,
                         size));

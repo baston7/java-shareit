@@ -14,66 +14,66 @@ import javax.validation.ConstraintViolationException;
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserNotFoundException(final UserNotFoundException e) {
+    public ErrorResponse handleUserNotFoundException(final UserNotFoundException exception) {
         log.error("Ошибка в поиске пользователя. Пользователь не найден");
         return new ErrorResponse(
-                e.getMessage()
+                exception.getMessage()
         );
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleItemNotFoundException(final ItemNotFoundException e) {
+    public ErrorResponse handleItemNotFoundException(final ItemNotFoundException exception) {
         log.error("Ошибка в поиске вещи. Вещи не существует");
         return new ErrorResponse(
-                e.getMessage());
+                exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleBookingNotFoundException(final BookingNotFoundException e) {
+    public ErrorResponse handleBookingNotFoundException(final BookingNotFoundException exception) {
         log.error("Ошибка в поиске аренды. Аренды не существует");
         return new ErrorResponse(
-                e.getMessage());
+                exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleItemRequestNotFoundException(final ItemRequestNotFoundException e) {
+    public ErrorResponse handleItemRequestNotFoundException(final ItemRequestNotFoundException exception) {
         log.error("Ошибка в поиске запроса на вещь. Запроса не существует");
         return new ErrorResponse(
-                e.getMessage());
+                exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleUserValidationException(final ValidationException e) {
+    public ErrorResponse handleUserValidationException(final ValidationException exception) {
         log.error("Ошибка валидации");
         return new ErrorResponse(
-                e.getMessage());
+                exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse onConstraintViolationException(final ConstraintViolationException e) {
+    public ErrorResponse onConstraintViolationException(final ConstraintViolationException exception) {
         log.error("Ошибка запроса");
         return new ErrorResponse(
-                e.getMessage());
+                exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse onMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
+    public ErrorResponse onMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
         log.error("Ошибка запроса");
         return new ErrorResponse(
-                e.getMessage());
+                exception.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleThrowable(final Throwable e) {
+    public ErrorResponse handleThrowable(final Throwable throwable) {
         log.error("Внутренняя ошибка сервера");
         return new ErrorResponse(
-                e.getMessage());
+                throwable.getMessage());
     }
 }

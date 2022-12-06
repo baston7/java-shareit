@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleIllegalArgumentException(final IllegalArgumentException e) {
-        return new ErrorResponse(e.getMessage());
+    public ErrorResponse handleIllegalArgumentException(final IllegalArgumentException exception) {
+        return new ErrorResponse(exception.getMessage());
     }
 }
